@@ -5,17 +5,20 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private static readonly float SPEED = 5f;
+    private static readonly float SPEED = 7.5f;
 
     [SerializeField] 
     private CharacterController _characterController;
 
     private float _gravity;
+    private float _rotationSpeed;
+    private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
     // Start is called before the first frame update
     void Start()
     {
         _gravity = -9.81f * Time.deltaTime;
+        _rotationSpeed = 720f;
         _characterController = GetComponent<CharacterController>();
     }
 
@@ -29,14 +32,21 @@ public class PlayerController : MonoBehaviour
     {
         var x = Input.GetAxis("Horizontal") * SPEED * Time.deltaTime;
         var z = Input.GetAxis("Vertical") * SPEED * Time.deltaTime;
-        _characterController.Move(new Vector3(x, _gravity, z));
+        var movement = new Vector3(x, _gravity, z);
+        _characterController.Move(movement);
+        // TODO: Fix rotation
+        if (movement == Vector3.zero) return;
+        var toRotation = Quaternion.LookRotation(movement, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, _rotationSpeed * Time.deltaTime);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.collider.name == "Cube")
         {
-            hit.gameObject.GetComponent<Renderer>().material.color = Color.green;
+            var renderer = hit.gameObject.GetComponent<Renderer>();
+            renderer.material.EnableKeyword("_EMISSION");
+            renderer.material.SetColor(EmissionColor, Color.green);
         }
     }
 }
