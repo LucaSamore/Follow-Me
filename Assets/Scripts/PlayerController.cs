@@ -34,25 +34,23 @@ public sealed class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TakeDamage(20);
+            TakeDamage(5);
         }
     }
-    
+
     private void MovePlayer()
     {
         var x = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
         var z = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
         var movement = new Vector3(x, _gravity, z);
-        
         _characterController.Move(movement);
-        
-        if (movement == Vector3.zero) return;
-        
         movement.y = 0f;
-        
+
+        if (movement == Vector3.zero) return;
+
         transform.rotation = Quaternion.RotateTowards(transform.rotation, 
-            Quaternion.LookRotation(movement, Vector3.up),
-            _rotationSpeed * Time.deltaTime);
+        Quaternion.LookRotation(movement, Vector3.up),
+        _rotationSpeed * Time.deltaTime);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
