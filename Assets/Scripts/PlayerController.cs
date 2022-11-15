@@ -8,27 +8,24 @@ public sealed class PlayerController : MonoBehaviour
     private static readonly float Speed = 7.5f;
     private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
-    [SerializeField] private CharacterController _characterController;
-    [SerializeField] private int _maxHP;
-    [SerializeField] private int _currentHP;
-    [SerializeField] private HealthBarController _healthBar;
+    [SerializeField] private CharacterController characterController;
+    [SerializeField] private int maxHp;
+    [SerializeField] private int currentHp;
+    [SerializeField] private HealthBarController healthBar;
     
     private float _gravity;
     private float _rotationSpeed;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _gravity = -9.81f * Time.deltaTime;
         _rotationSpeed = 720f;
-        _maxHP = 100;
-        _currentHP = _maxHP;
-        _healthBar.SetMaxHealth(_maxHP);
-        _characterController = GetComponent<CharacterController>();
+        healthBar.SetMaxHealth(maxHp);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         MovePlayer();
 
@@ -43,14 +40,14 @@ public sealed class PlayerController : MonoBehaviour
         var x = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;
         var z = Input.GetAxis("Vertical") * Speed * Time.deltaTime;
         var movement = new Vector3(x, _gravity, z);
-        _characterController.Move(movement);
+        characterController.Move(movement);
         movement.y = 0f;
 
         if (movement == Vector3.zero) return;
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, 
-        Quaternion.LookRotation(movement, Vector3.up),
-        _rotationSpeed * Time.deltaTime);
+            Quaternion.LookRotation(movement, Vector3.up), 
+            _rotationSpeed * Time.deltaTime);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -65,7 +62,7 @@ public sealed class PlayerController : MonoBehaviour
 
     private void TakeDamage(int damage)
     {
-        _currentHP -= damage;
-        _healthBar.SetHealth(_currentHP);
+        currentHp -= damage;
+        healthBar.SetHealth(currentHp);
     }
 }

@@ -4,30 +4,34 @@ using UnityEngine;
 
 public sealed class OpponentController : MonoBehaviour
 {
-    [SerializeField] private int _maxHP;
-    [SerializeField] private int _currentHP;
-    [SerializeField] private HealthBarController _healthBar;
+    [SerializeField] private CharacterController characterController;
+    [SerializeField] private int maxHp;
+    [SerializeField] private int currentHp;
+    [SerializeField] private HealthBarController healthBar;
+    
+    private float _gravity;
     
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        _maxHP = 100;
-        _currentHP = _maxHP;
-        _healthBar.SetMaxHealth(_maxHP);
+        _gravity = -9.81f * Time.deltaTime;
+        healthBar.SetMaxHealth(maxHp);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     TakeDamage(20);
-        // }
+        characterController.Move(new Vector3(0f, _gravity, 0f));
+        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            TakeDamage(5);
+        }
     }
     
     private void TakeDamage(int damage)
     {
-        _currentHP -= damage;
-        _healthBar.SetHealth(_currentHP);
+        currentHp -= damage;
+        healthBar.SetHealth(currentHp);
     }
 }
