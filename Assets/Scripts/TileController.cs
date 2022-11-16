@@ -5,8 +5,7 @@ using UnityEngine;
 public sealed class TileController : MonoBehaviour
 {
     [SerializeField] private Transform centerZone;
-    [SerializeField] private Transform zone;
-    
+
     public IEnumerable<Vector2> PositionsFromCenter { get; private set; }
 
     private void Start()
@@ -19,7 +18,7 @@ public sealed class TileController : MonoBehaviour
     {
         var position = centerZone.transform.position;
 
-        return zone
+        return transform
             .Cast<Transform>()
             .Select(t => t.position)
             .Select(p => new Vector2(p.x - position.x, p.z - position.z));
