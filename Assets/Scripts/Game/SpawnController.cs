@@ -1,21 +1,24 @@
 using UnityEngine;
 
-public sealed class SpawnController : MonoBehaviour
+namespace Game
 {
-    [SerializeField] private Transform character;
-    [SerializeField] private Transform spawnPosition;
-
-    private void Update()
+    public sealed class SpawnController : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        [SerializeField] private Transform character;
+        [SerializeField] private Transform spawnPosition;
+
+        private void Update()
         {
-            Respawn();
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                Respawn();
+            }
         }
-    }
 
-    private void Respawn()
-    {
-        character.transform.position = spawnPosition.transform.position;
-        Physics.SyncTransforms();
+        private void Respawn()
+        {
+            character.transform.position = spawnPosition.transform.position;
+            Physics.SyncTransforms();
+        }
     }
 }

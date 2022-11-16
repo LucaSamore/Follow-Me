@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class Billboard : MonoBehaviour
+namespace Characters.HealthBar
 {
-    [SerializeField] private Transform _camera;
-    
-    void LateUpdate()
+    public sealed class Billboard : MonoBehaviour
     {
-        transform.LookAt(transform.position + _camera.forward);
+        [SerializeField] private Transform _camera;
+
+        private void LateUpdate()
+        {
+            transform.LookAt(transform.position + _camera.forward);
+        }
     }
 }

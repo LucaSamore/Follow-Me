@@ -1,35 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
+using Characters.HealthBar;
 using UnityEngine;
 
-public sealed class OpponentController : MonoBehaviour
+namespace Characters
 {
-    [SerializeField] private CharacterController characterController;
-    [SerializeField] private int maxHp;
-    [SerializeField] private int currentHp;
-    [SerializeField] private HealthBarController healthBar;
-    
-    private float _gravity;
-    
-    private void Start()
+    public sealed class OpponentController : MonoBehaviour
     {
-        _gravity = -9.81f * Time.deltaTime;
-        healthBar.SetMaxHealth(maxHp);
-    }
+        [SerializeField] private CharacterController characterController;
+        [SerializeField] private int maxHp;
+        [SerializeField] private int currentHp;
+        [SerializeField] private HealthBarController healthBar;
     
-    private void Update()
-    {
-        characterController.Move(new Vector3(0f, _gravity, 0f));
-        
-        if (Input.GetKeyDown(KeyCode.Space))
+        private float _gravity;
+    
+        private void Start()
         {
-            TakeDamage(5);
+            _gravity = -9.81f * Time.deltaTime;
+            healthBar.SetMaxHealth(maxHp);
         }
-    }
     
-    private void TakeDamage(int damage)
-    {
-        currentHp -= damage;
-        healthBar.SetHealth(currentHp);
+        private void Update()
+        {
+            characterController.Move(new Vector3(0f, _gravity, 0f));
+        
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                TakeDamage(5);
+            }
+        }
+    
+        private void TakeDamage(int damage)
+        {
+            currentHp -= damage;
+            healthBar.SetHealth(currentHp);
+        }
     }
 }

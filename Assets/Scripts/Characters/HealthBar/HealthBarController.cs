@@ -1,22 +1,25 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class HealthBarController : MonoBehaviour
+namespace Characters.HealthBar
 {
-    [SerializeField] private Slider slider;
-    [SerializeField] private Gradient gradient;
-    [SerializeField] private Image fill;
-
-    public void SetHealth(int health)
+    public sealed class HealthBarController : MonoBehaviour
     {
-        slider.value = health;
-        fill.color = gradient.Evaluate(slider.normalizedValue);
-    }
+        [SerializeField] private Slider slider;
+        [SerializeField] private Gradient gradient;
+        [SerializeField] private Image fill;
 
-    public void SetMaxHealth(int health)
-    {
-        slider.maxValue = health;
-        slider.value = health;
-        fill.color = gradient.Evaluate(1f);
+        public void SetHealth(int health)
+        {
+            slider.value = health;
+            fill.color = gradient.Evaluate(slider.normalizedValue);
+        }
+
+        public void SetMaxHealth(int health)
+        {
+            slider.maxValue = health;
+            slider.value = health;
+            fill.color = gradient.Evaluate(1f);
+        }
     }
 }
