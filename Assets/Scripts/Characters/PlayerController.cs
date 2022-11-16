@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public sealed class PlayerController : MonoBehaviour
@@ -12,7 +13,7 @@ public sealed class PlayerController : MonoBehaviour
     [SerializeField] private int maxHp;
     [SerializeField] private int currentHp;
     [SerializeField] private HealthBarController healthBar;
-    
+    [CanBeNull] private Renderer _previousTile;
     private float _gravity;
     private float _rotationSpeed;
     
@@ -50,12 +51,12 @@ public sealed class PlayerController : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (hit.collider.name == "Cube")
-        {
-            var renderer = hit.gameObject.GetComponent<Renderer>();
-            renderer.material.EnableKeyword("_EMISSION");
-            renderer.material.SetColor(EmissionColor, Color.green);
-        }
+        if (hit.collider.name != "Cube") return;
+        if (_previousTile is not null) _previousTile.material.SetColor(EmissionColor, Color.black);
+        var renderer = hit.gameObject.GetComponent<Renderer>();
+        renderer.material.EnableKeyword("_EMISSION");
+        renderer.material.SetColor(EmissionColor, Color.green);
+        _previousTile = renderer;
     }
 
     private void TakeDamage(int damage)
