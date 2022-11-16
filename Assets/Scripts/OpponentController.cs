@@ -11,14 +11,12 @@ public sealed class OpponentController : MonoBehaviour
     
     private float _gravity;
     
-    // Start is called before the first frame update
     private void Start()
     {
         _gravity = -9.81f * Time.deltaTime;
         healthBar.SetMaxHealth(maxHp);
     }
-
-    // Update is called once per frame
+    
     private void Update()
     {
         characterController.Move(new Vector3(0f, _gravity, 0f));

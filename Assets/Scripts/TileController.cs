@@ -1,22 +1,27 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Scripting;
+using System.Linq;
 using UnityEngine;
 
-public class TileController : MonoBehaviour
+public sealed class TileController : MonoBehaviour
 {
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField] private Transform centerZone;
+    [SerializeField] private Transform zone;
     
+    public IEnumerable<Vector2> PositionsFromCenter { get; private set; }
+
+    private void Start()
+    {
+        PositionsFromCenter = ComputePositions();
+        PositionsFromCenter.ToList().ForEach(p => Debug.Log($"Position: {p}"));
+    }
+
+    private IEnumerable<Vector2> ComputePositions()
+    {
+        var position = centerZone.transform.position;
+
+        return zone
+            .Cast<Transform>()
+            .Select(t => t.position)
+            .Select(p => new Vector2(p.x - position.x, p.z - position.z));
+    }
 }

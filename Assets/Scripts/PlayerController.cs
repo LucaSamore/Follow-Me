@@ -15,16 +15,14 @@ public sealed class PlayerController : MonoBehaviour
     
     private float _gravity;
     private float _rotationSpeed;
-
-    // Start is called before the first frame update
+    
     private void Start()
     {
         _gravity = -9.81f * Time.deltaTime;
         _rotationSpeed = 720f;
         healthBar.SetMaxHealth(maxHp);
     }
-
-    // Update is called once per frame
+    
     private void Update()
     {
         MovePlayer();
