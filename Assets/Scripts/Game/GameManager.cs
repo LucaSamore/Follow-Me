@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Characters;
 using Characters.AI;
 using Characters.AI.Algorithms;
+using Characters.Player;
 using Map;
 using UnityEngine;
 
@@ -39,6 +37,11 @@ namespace Game
             OpponentMap = MapUtil.Map(opponentZone, opponentZoneCenter.transform.position);
 
             _opponentController.PathBuilder = new PathBuilder(OpponentMap, new NeighbourAlgorithm());
+
+            foreach (var kvp in Tilemap)
+            {
+                Debug.Log(kvp);
+            }
         }
 
         private void Update()

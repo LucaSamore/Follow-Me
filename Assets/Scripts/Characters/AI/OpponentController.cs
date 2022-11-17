@@ -1,9 +1,7 @@
-using System;
-using Characters.AI;
 using Characters.HealthBar;
 using UnityEngine;
 
-namespace Characters
+namespace Characters.AI
 {
     public sealed class OpponentController : MonoBehaviour
     {

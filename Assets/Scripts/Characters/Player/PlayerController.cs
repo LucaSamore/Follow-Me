@@ -2,7 +2,7 @@ using Characters.HealthBar;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Characters
+namespace Characters.Player
 {
     public sealed class PlayerController : MonoBehaviour
     {
