@@ -18,7 +18,8 @@ namespace Map
         public static IDictionary<Vector3, Vector2> Merge(IDictionary<Vector3, Vector2> playerZone,
             IDictionary<Vector3, Vector2> opponentZone)
         {
-            return playerZone.Concat(opponentZone)
+            return playerZone
+                .Concat(opponentZone)
                 .ToLookup(k => k.Key, v => v.Value)
                 .ToDictionary(x => x.Key, y => y.First());
         }
