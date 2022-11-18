@@ -5,6 +5,6 @@ namespace Characters.AI.Algorithms
 {
     public interface IPathStrategy
     {
-        IDictionary<Vector3,Vector2> CreatePath(IDictionary<Vector3,Vector2> map, Vector2 startingPosition, int steps);
+        IDictionary<Vector3,Vector2Int> CreatePath(IDictionary<Vector3,Vector2Int> map, Vector2Int startingPosition, int steps);
     }
 }

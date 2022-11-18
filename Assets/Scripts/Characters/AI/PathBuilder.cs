@@ -7,16 +7,16 @@ namespace Characters.AI
 {
     public sealed class PathBuilder
     {
-        private readonly IDictionary<Vector3,Vector2> _map;
+        private readonly IDictionary<Vector3,Vector2Int> _map;
         public IPathStrategy Algorithm { get; set; }
 
-        public PathBuilder(IDictionary<Vector3,Vector2> map, [CanBeNull] IPathStrategy defaultAlgorithm)
+        public PathBuilder(IDictionary<Vector3,Vector2Int> map, [CanBeNull] IPathStrategy defaultAlgorithm)
         {
             _map = map;
             Algorithm = defaultAlgorithm ?? new NeighbourAlgorithm();
         }
 
-        public IDictionary<Vector3,Vector2> BuildPath(Vector2 startingPosition, int steps) 
+        public IDictionary<Vector3,Vector2Int> BuildPath(Vector2Int startingPosition, int steps) 
             => Algorithm.CreatePath(_map, startingPosition, steps);
 
         public void ChangeAlgorithm(IPathStrategy newAlgorithm) => Algorithm = newAlgorithm;

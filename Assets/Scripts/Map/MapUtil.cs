@@ -6,17 +6,18 @@ namespace Map
 {
     public static class MapUtil
     {
-        public static IDictionary<Vector3,Vector2> Map(Transform zone, Vector3 startingPosition)
+        public static IDictionary<Vector3,Vector2Int> Map(Transform zone, Vector3 startingPosition)
         {
             return zone
                 .Cast<Transform>()
                 .Select(t => t.position)
                 .ToDictionary(k => k, 
-                              v => new Vector2(v.x - startingPosition.x, v.z - startingPosition.z));
+                              v => Vector2Int.RoundToInt(
+                                  new Vector2(v.x - startingPosition.x, v.z - startingPosition.z)));
         }
 
-        public static IDictionary<Vector3, Vector2> Merge(IDictionary<Vector3, Vector2> playerZone,
-            IDictionary<Vector3, Vector2> opponentZone)
+        public static IDictionary<Vector3,Vector2Int> Merge(IDictionary<Vector3,Vector2Int> playerZone,
+            IDictionary<Vector3,Vector2Int> opponentZone)
         {
             return playerZone
                 .Concat(opponentZone)

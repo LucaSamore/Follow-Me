@@ -19,9 +19,9 @@ namespace Game
         private PlayerController _playerController;
         private OpponentController _opponentController;
 
-        public IDictionary<Vector3, Vector2> Tilemap { get; private set; }
-        public IDictionary<Vector3, Vector2> PlayerMap { get; private set; }
-        public IDictionary<Vector3, Vector2> OpponentMap { get; private set; }
+        //public IDictionary<Vector3, Vector2> Tilemap { get; private set; }
+        public IDictionary<Vector3,Vector2Int> PlayerMap { get; private set; }
+        public IDictionary<Vector3,Vector2Int> OpponentMap { get; private set; }
 
         private void Awake()
         {
@@ -31,17 +31,17 @@ namespace Game
 
         private void Start()
         {
-            Tilemap = MapUtil.Merge(MapUtil.Map(playerZone, playerZoneCenter.transform.position), 
-                MapUtil.Map(opponentZone, opponentZoneCenter.transform.position));
+            // Tilemap = MapUtil.Merge(MapUtil.Map(playerZone, playerZoneCenter.transform.position), 
+            //     MapUtil.Map(opponentZone, opponentZoneCenter.transform.position));
             PlayerMap = MapUtil.Map(playerZone, playerZoneCenter.transform.position);
             OpponentMap = MapUtil.Map(opponentZone, opponentZoneCenter.transform.position);
 
-            _opponentController.PathBuilder = new PathBuilder(OpponentMap, new NeighbourAlgorithm());
-
-            foreach (var kvp in Tilemap)
+            foreach (var kvp in PlayerMap)
             {
                 Debug.Log(kvp);
             }
+
+            _opponentController.PathBuilder = new PathBuilder(OpponentMap, new NeighbourAlgorithm());
         }
 
         private void Update()
