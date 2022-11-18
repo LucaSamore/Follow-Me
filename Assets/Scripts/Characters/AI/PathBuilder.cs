@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Characters.AI.Algorithms;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Characters.AI
             Algorithm = defaultAlgorithm ?? new NeighbourAlgorithm();
         }
 
-        public IDictionary<Vector3,Vector2Int> BuildPath(Vector2Int startingPosition, int steps) 
+        public IList<Tuple<Vector3,Vector2Int>> BuildPath(Vector2Int startingPosition, int steps) 
             => Algorithm.CreatePath(_map, startingPosition, steps);
 
         public void ChangeAlgorithm(IPathStrategy newAlgorithm) => Algorithm = newAlgorithm;

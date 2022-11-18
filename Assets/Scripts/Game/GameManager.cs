@@ -36,12 +36,9 @@ namespace Game
             PlayerMap = MapUtil.Map(playerZone, playerZoneCenter.transform.position);
             OpponentMap = MapUtil.Map(opponentZone, opponentZoneCenter.transform.position);
 
-            foreach (var kvp in PlayerMap)
-            {
-                Debug.Log(kvp);
-            }
-
             _opponentController.PathBuilder = new PathBuilder(OpponentMap, new NeighbourAlgorithm());
+            
+            _opponentController.Test();
         }
 
         private void Update()

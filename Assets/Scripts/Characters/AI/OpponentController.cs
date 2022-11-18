@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Characters.HealthBar;
 using UnityEngine;
 
@@ -13,6 +15,7 @@ namespace Characters.AI
         private float _gravity;
         
         public PathBuilder PathBuilder { get; set; }
+        public IList<Tuple<Vector3,Vector2Int>> Path { get; set; }
 
         private void Start()
         {
@@ -38,7 +41,8 @@ namespace Characters.AI
 
         public void Test()
         {
-            Debug.Log("HEYOO");
+            Path = PathBuilder.BuildPath(new Vector2Int(0, 0), 5);
+            Debug.Log(Path);
         }
     }
 }
