@@ -8,6 +8,7 @@ namespace Characters.AI
 {
     public sealed class OpponentController : MonoBehaviour
     {
+        private static readonly float Speed = 5f;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private int maxHp;
         [SerializeField] private int currentHp;
@@ -27,7 +28,7 @@ namespace Characters.AI
         private void Update()
         {
             characterController.Move(new Vector3(0f, _gravity, 0f));
-
+            
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 TakeDamage(5);
@@ -42,7 +43,7 @@ namespace Characters.AI
 
         public void Test()
         {
-            Path = PathBuilder.BuildPath(new Vector2Int(0, 0), 5);
+            Path = PathBuilder.BuildPath(new Vector2Int(0, 0), 50);
 
             var step = 1;
             
@@ -51,6 +52,16 @@ namespace Characters.AI
                 Debug.Log($"Step: {step}, Position: ({p.Item1},{p.Item2})");
                 step++;
             }
+        }
+
+        public void Walk()
+        {
+            // foreach (var position in Path)
+            // {
+            //     var x = position.Item1.x * Speed * Time.deltaTime;
+            //     var z = position.Item1.z * Speed * Time.deltaTime;
+            //     characterController.Move(new Vector3(x, _gravity, z));
+            // }
         }
     }
 }

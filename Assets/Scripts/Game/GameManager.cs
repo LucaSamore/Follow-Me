@@ -33,17 +33,17 @@ namespace Game
         {
             // Tilemap = MapUtil.Merge(MapUtil.Map(playerZone, playerZoneCenter.transform.position), 
             //     MapUtil.Map(opponentZone, opponentZoneCenter.transform.position));
+            
             PlayerMap = MapUtil.Map(playerZone, playerZoneCenter.transform.position);
             OpponentMap = MapUtil.Map(opponentZone, opponentZoneCenter.transform.position);
 
             _opponentController.PathBuilder = new PathBuilder(OpponentMap, new NeighbourAlgorithm());
-            
             _opponentController.Test();
+            _opponentController.Walk();
         }
 
         private void Update()
         {
-            //_opponentController.Test();
         }
     }
 }
