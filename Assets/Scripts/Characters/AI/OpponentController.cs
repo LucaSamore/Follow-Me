@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Characters.HealthBar;
 using UnityEngine;
 
@@ -42,7 +43,14 @@ namespace Characters.AI
         public void Test()
         {
             Path = PathBuilder.BuildPath(new Vector2Int(0, 0), 5);
-            Debug.Log(Path);
+
+            var step = 1;
+            
+            foreach (var p in Path)
+            {
+                Debug.Log($"Step: {step}, Position: ({p.Item1},{p.Item2})");
+                step++;
+            }
         }
     }
 }
