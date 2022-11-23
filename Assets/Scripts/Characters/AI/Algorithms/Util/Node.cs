@@ -1,30 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using JetBrains.Annotations;
 
 namespace Characters.AI.Algorithms.Util
 {
-    public struct Node
+    public sealed class Node<T> where T : struct
     {
-        public Vector3 Position { get; }
-        public Vector2Int PositionFromCenter { get; }
-        public int Cost { get; set; }
+        public T Element { get; }
+        public int Cost { get; set; } = int.MaxValue;
+        [CanBeNull] public Node<T> Parent { get; set; }
 
-        public Node(Vector3 position, Vector2Int positionFromCenter)
-        {
-            Position = position;
-            PositionFromCenter = positionFromCenter;
-            Cost = int.MaxValue;
-        }
+        public Node(T element) => Element = element;
 
-        public override int GetHashCode() => HashCode.Combine(Position, PositionFromCenter);
+        public override int GetHashCode() => HashCode.Combine(Element);
 
-        public override bool Equals(object obj) => obj is Node node && 
-            EqualityComparer<Vector3>.Default.Equals(Position, node.Position) &&
-            EqualityComparer<Vector2Int>.Default.Equals(PositionFromCenter, node.PositionFromCenter) &&
+        public override bool Equals(object obj) => obj is Node<T> node &&
+            EqualityComparer<T>.Default.Equals(Element, node.Element) &&
             EqualityComparer<int>.Default.Equals(Cost, node.Cost);
 
-        public override string ToString() => 
-            $"Position: {Position} | PositionFromCenter: {PositionFromCenter} | Cost: {Cost}";
+        public override string ToString() =>
+            $"Element: {Element} | " +
+            $"Cost: {Cost} | " +
+            $"Parent: {Parent?.Element}";
     }
 }
