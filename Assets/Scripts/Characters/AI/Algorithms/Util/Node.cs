@@ -8,6 +8,7 @@ namespace Characters.AI.Algorithms.Util
     {
         public T Element { get; }
         public int Cost { get; set; } = int.MaxValue;
+        public NodeState State { get; set; } = NodeState.Close;
         [CanBeNull] public Node<T> Parent { get; set; }
 
         public Node(T element) => Element = element;
