@@ -19,7 +19,5 @@ namespace Characters.AI
 
         public IList<Tuple<Vector3,Vector2Int>> BuildPath(Vector2Int startingPosition, int steps) 
             => Algorithm.CreatePath(_map, startingPosition, steps);
-
-        public void ChangeAlgorithm(IPathStrategy newAlgorithm) => Algorithm = newAlgorithm;
     }
 }
