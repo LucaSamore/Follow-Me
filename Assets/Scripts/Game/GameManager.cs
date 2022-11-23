@@ -37,9 +37,9 @@ namespace Game
             PlayerMap = MapUtil.Map(playerZone, playerZoneCenter.transform.position);
             OpponentMap = MapUtil.Map(opponentZone, opponentZoneCenter.transform.position);
 
-            _opponentController.PathBuilder = new PathBuilder(OpponentMap, new NeighbourAlgorithm());
+            _opponentController.PathBuilder = new PathBuilder(OpponentMap, new TweakedDijkstra());
             _opponentController.Test();
-            _opponentController.Walk();
+            //_opponentController.Walk();
         }
 
         private void Update()
