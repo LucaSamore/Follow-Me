@@ -17,20 +17,17 @@ namespace Characters.AI.Algorithms
 
         public IList<Tuple<Vector3,Vector2Int>> CreatePath(IDictionary<Vector3,Vector2Int> map, Vector2Int startingPosition, int depth)
         {
-            Nodes = MapToNodes(map);
+            Nodes = NodeUtil.MapToNodes(map);
             var source = new Node<Vector2Int>(startingPosition) { Cost = 0, State = NodeState.Open };
-            var destination = ChooseDestination(Nodes, source, depth);
+            var destination = ChooseDestination(source, depth);
             var path = FindPath(source, destination);
             
             throw new NotImplementedException();
         }
 
-        private static IEnumerable<Node<Vector2Int>> MapToNodes(IDictionary<Vector3,Vector2Int> map) => 
-            map.Select(kvp => new Node<Vector2Int>(kvp.Value));
-
-        private static Node<Vector2Int> ChooseDestination(IEnumerable<Node<Vector2Int>> map, Node<Vector2Int> source, int depth)
+        private Node<Vector2Int> ChooseDestination(Node<Vector2Int> source, int depth)
         {
-            var items = map.Where(
+            var items = Nodes.Where(
                 n => Math.Abs(n.Element.x - source.Element.x) >= depth &&
                                        Math.Abs(n.Element.y - source.Element.y) >= depth).ToArray();
 
