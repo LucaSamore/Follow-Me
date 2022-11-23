@@ -4,16 +4,17 @@ using UnityEngine;
 
 namespace Characters.AI.Algorithms.Util
 {
-    public sealed class Node
+    public struct Node
     {
         public Vector3 Position { get; }
         public Vector2Int PositionFromCenter { get; }
-        public int Cost { get; set; } = int.MaxValue;
+        public int Cost { get; set; }
 
         public Node(Vector3 position, Vector2Int positionFromCenter)
         {
             Position = position;
             PositionFromCenter = positionFromCenter;
+            Cost = int.MaxValue;
         }
 
         public override int GetHashCode() => HashCode.Combine(Position, PositionFromCenter);
@@ -24,6 +25,6 @@ namespace Characters.AI.Algorithms.Util
             EqualityComparer<int>.Default.Equals(Cost, node.Cost);
 
         public override string ToString() => 
-            $"Position: {Position} | PositionFromCenter {PositionFromCenter} | Cost: {Cost}";
+            $"Position: {Position} | PositionFromCenter: {PositionFromCenter} | Cost: {Cost}";
     }
 }

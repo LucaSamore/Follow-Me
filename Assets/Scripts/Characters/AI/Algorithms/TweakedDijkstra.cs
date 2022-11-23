@@ -16,7 +16,7 @@ namespace Characters.AI.Algorithms
             int steps)
         {
             _nodes = MapToNodes(map);
-            _nodes.ToList().ForEach(Debug.Log);
+            _nodes.ToList().ForEach(n => Debug.Log(n));
             return null;
         }
 
