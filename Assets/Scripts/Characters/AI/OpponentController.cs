@@ -16,7 +16,7 @@ namespace Characters.AI
         
         private float _gravity;
         
-        public PathBuilder PathBuilder { get; set; }
+        public PathBuilder<Vector2Int> PathBuilder2D { get; set; }
         public IList<Tuple<Vector3,Vector2Int>> Path { get; set; }
 
         private void Start()
@@ -43,7 +43,7 @@ namespace Characters.AI
 
         public void Test()
         {
-            Path = PathBuilder.BuildPath(new Vector2Int(0, 0), 2);
+            Path = PathBuilder2D.BuildPath(new Vector2Int(0, 0), 2);
 
             // var step = 1;
             //

@@ -6,11 +6,11 @@ using Random = System.Random;
 
 namespace Characters.AI.Algorithms
 {
-    public sealed class NeighbourAlgorithm : IPathStrategy
+    public sealed class NeighbourAlgorithm2D : IPathStrategy<Vector2Int>
     {
         private static readonly int NeighbourDistance = 3;
         
-        private readonly Func<IDictionary<Vector3, Vector2Int>, Vector2Int, Vector3> _getKeyFromValue = (map, v2) =>
+        private readonly Func<IDictionary<Vector3,Vector2Int>, Vector2Int, Vector3> _getKeyFromValue = (map, v2) =>
             map.FirstOrDefault(x => x.Value.Equals(v2)).Key;
         
         public IList<Tuple<Vector3,Vector2Int>> CreatePath(IDictionary<Vector3,Vector2Int> map,
@@ -29,7 +29,7 @@ namespace Characters.AI.Algorithms
             return path;
         }
 
-        private IList<Vector2Int> Neighbours(IDictionary<Vector3,Vector2Int> map, Vector2Int position)
+        private static IList<Vector2Int> Neighbours(IDictionary<Vector3,Vector2Int> map, Vector2Int position)
         {
             return Enumerable.Range(position.x - 1, NeighbourDistance)
                 .SelectMany(kk => Enumerable.Range(position.y - 1, NeighbourDistance)
@@ -46,7 +46,7 @@ namespace Characters.AI.Algorithms
                 .First();
         }
 
-        private IEnumerable<Vector2Int> TakeRandomNeighbour(IList<Vector2Int> neighbours)
+        private static IEnumerable<Vector2Int> TakeRandomNeighbour(IList<Vector2Int> neighbours)
         {
             yield return neighbours[new Random().Next(0, neighbours.Count - 1)];
         }

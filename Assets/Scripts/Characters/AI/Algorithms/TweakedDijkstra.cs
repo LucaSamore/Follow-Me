@@ -7,7 +7,7 @@ using Random = System.Random;
 
 namespace Characters.AI.Algorithms
 {
-    public sealed class TweakedDijkstra : IPathStrategy
+    public sealed class TweakedDijkstra : IPathStrategy<Vector2Int>
     {
         private static readonly int NeighbourDistance = 3;
         private static readonly int HorizontalAndVerticalCost = 10;
@@ -79,16 +79,9 @@ namespace Characters.AI.Algorithms
 
         private void UpdateCost(Node<Vector2Int> toBeUpdated, Node<Vector2Int> from)
         {
-            toBeUpdated.Cost = IsDiagonalNeighbour(from, toBeUpdated)
+            toBeUpdated.Cost = NodeUtil.IsDiagonalNeighbour(from, toBeUpdated)
                 ? from.Cost + HorizontalAndVerticalCost
                 : from.Cost + DiagonalCost;
         }
-            
-
-        private bool IsDiagonalNeighbour(Node<Vector2Int> node, Node<Vector2Int> neighbour) =>
-            neighbour.Element.Equals(node.Element + new Vector2Int(1, 1)) ||
-            neighbour.Element.Equals(node.Element + new Vector2Int(-1,-1)) ||
-            neighbour.Element.Equals(node.Element + new Vector2Int(-1,1)) ||
-            neighbour.Element.Equals(node.Element + new Vector2Int(1,-1));
     }
 }

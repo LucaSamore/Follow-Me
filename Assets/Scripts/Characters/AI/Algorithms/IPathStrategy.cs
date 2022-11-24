@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Characters.AI.Algorithms
 {
-    public interface IPathStrategy
+    public interface IPathStrategy<T> where T : struct
     {
-        IList<Tuple<Vector3,Vector2Int>> CreatePath(IDictionary<Vector3,Vector2Int> map, Vector2Int startingPosition, int steps);
+        IList<Tuple<Vector3,T>> CreatePath(IDictionary<Vector3,T> map, T startingPosition, int steps);
     }
 }
