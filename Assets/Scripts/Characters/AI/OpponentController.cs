@@ -45,13 +45,13 @@ namespace Characters.AI
         {
             Path = PathBuilder2D.BuildPath(new Vector2Int(0, 0), 2);
 
-            // var step = 1;
-            //
-            // foreach (var p in Path)
-            // {
-            //     Debug.Log($"Step: {step}, Position: ({p.Item1},{p.Item2})");
-            //     step++;
-            // }
+            var step = 1;
+            
+            foreach (var p in Path)
+            {
+                Debug.Log($"Step: {step}, Position: ({p.Item1},{p.Item2})");
+                step++;
+            }
         }
 
         public void Walk()

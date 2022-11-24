@@ -13,19 +13,27 @@ namespace Characters.AI.Algorithms
         private static readonly int HorizontalAndVerticalCost = 10;
         private static readonly int DiagonalCost = 14;
         private static readonly int AlgorithmIterations = 5;
+        
+        private readonly Func<IDictionary<Vector3,Vector2Int>, Vector2Int, Vector3> _getKeyFromValue = (map, v2) =>
+            map.FirstOrDefault(x => x.Value.Equals(v2)).Key;
 
         private IEnumerable<Node<Vector2Int>> Nodes { get; set; }
-        private IList<Node<Vector2Int>> AlreadyVisited { get; set; } = new List<Node<Vector2Int>>();
 
         public IList<Tuple<Vector3,Vector2Int>> CreatePath(IDictionary<Vector3,Vector2Int> map, Vector2Int startingPosition, int depth)
         {
             Nodes = NodeUtil.MapToNodes(map);
             var source = new Node<Vector2Int>(startingPosition) { Cost = 0, State = NodeState.Open };
             var destination = ChooseDestination(source, depth);
+            Debug.Log($"Destination: {destination.Element}");
             Nodes = Nodes.Append(source);
-            var path = FindPath(source, destination);
+            var path = FindShortestPath(destination).ToList();
+            path.Reverse();
+
+            return path
+                .Select(node => new Tuple<Vector3, Vector2Int>(_getKeyFromValue(map, node.Element), node.Element))
+                .ToList();
             
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private Node<Vector2Int> ChooseDestination(Node<Vector2Int> source, int depth)
@@ -37,51 +45,91 @@ namespace Characters.AI.Algorithms
             return items[new Random().Next(0, items.Length - 1)];
         }
         
-        private IEnumerable<Node<Vector2Int>> FindPath(Node<Vector2Int> source, Node<Vector2Int> destination)
+        private IEnumerable<Node<Vector2Int>> FindShortestPath(Node<Vector2Int> destination)
         {
-            var openNodes = NextNodes();
+            var i = 0;
+            var path = new List<Node<Vector2Int>>();
+            var closedNodes = new List<Node<Vector2Int>>();
+            var openNodes = OpenNodesWithMinimumCost();
 
-            foreach (var node in openNodes)
+            while (i < 5)
             {
-                node.State = NodeState.Close;
-                
+                foreach (var node in openNodes)
+                {
+                    node.State = NodeState.Close;
+                    var ncn = NonClosedNeighbours(node).ToList();
+                    ncn.ForEach(n => n.State = NodeState.Open);
+                    ncn.ForEach(n =>
+                    {
+                        var neighbourWithMinCost = NeighbourWithMinimumCost(n);
+                    
+                        if (TryUpdateCost(n, neighbourWithMinCost))
+                        {
+                            n.Parent = neighbourWithMinCost;
+                        }
+                    });
+                    closedNodes.Add(node);
+                }
+                openNodes = OpenNodesWithMinimumCost();
+                i++;
+            }
+            
+            closedNodes.ForEach(n=> Debug.Log($"Nodo: {n.Element} | {n.Cost} | {n.State}"));
+
+            var current = closedNodes.Find(n => n.Equals(destination));
+
+            while (current.Parent is not null)
+            {
+                path.Add(current.Parent);
+                current = current.Parent;
             }
 
-
-            throw new NotImplementedException();
+            return path;
         }
         
-        private IEnumerable<Node<Vector2Int>> NextNodes()
+        private IEnumerable<Node<Vector2Int>> OpenNodesWithMinimumCost()
         {
             return Nodes
                 .Where(n => n.State == NodeState.Open)
-                .Where(on => on.Cost == Nodes.Select(n => n.Cost).Min());
+                .Where(on => on.Cost == NodeWithMinimumCost().Cost);
         }
 
-        private IEnumerable<Node<Vector2Int>> Neighbours(Node<Vector2Int> node)
+        private Node<Vector2Int> NodeWithMinimumCost() => 
+            Nodes.First(n => n.Cost == Nodes.Select(n1 => n1.Cost).Min());
+
+        private static int GetMinimumCost(IEnumerable<Node<Vector2Int>> nodes) =>
+            nodes.Select(n => n.Cost).Min();
+        
+        private Node<Vector2Int> NeighbourWithMinimumCost(Node<Vector2Int> node)
         {
-            return Enumerable.Range(node.Element.x - 1, NeighbourDistance)
+            var neighbours = Enumerable.Range(node.Element.x - 1, NeighbourDistance)
                 .SelectMany(kk =>
                     Enumerable.Range(node.Element.y - 1, NeighbourDistance).Select(vv => new Vector2Int(kk, vv)))
                 .Where(p => Nodes.Select(n => n.Element).Contains(p))
                 .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)));
+
+            return neighbours.First(n => n.Cost == GetMinimumCost(neighbours));
         }
 
-        private IEnumerable<Node<Vector2Int>> NonInfiniteNeighbours(Node<Vector2Int> node)
+        private IEnumerable<Node<Vector2Int>> NonClosedNeighbours(Node<Vector2Int> node)
         {
             return Enumerable.Range(node.Element.x - 1, NeighbourDistance)
                 .SelectMany(kk => 
                     Enumerable.Range(node.Element.y - 1, NeighbourDistance).Select(vv => new Vector2Int(kk, vv)))
                 .Where(p => Nodes.Select(n => n.Element).Contains(p))
                 .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)))
-                .Where(n => n.Cost < int.MaxValue);
+                .Where(n => n.State != NodeState.Close);
         }
 
-        private void UpdateCost(Node<Vector2Int> toBeUpdated, Node<Vector2Int> from)
+        private static bool TryUpdateCost(Node<Vector2Int> toBeUpdated, Node<Vector2Int> from)
         {
-            toBeUpdated.Cost = NodeUtil.IsDiagonalNeighbour(from, toBeUpdated)
-                ? from.Cost + HorizontalAndVerticalCost
-                : from.Cost + DiagonalCost;
+            var cost = from.Cost + (NodeUtil.IsDiagonalNeighbour(from, toBeUpdated)
+                ? DiagonalCost
+                : HorizontalAndVerticalCost);
+
+            if (cost > toBeUpdated.Cost) return false;
+            toBeUpdated.Cost = cost;
+            return true;
         }
     }
 }
