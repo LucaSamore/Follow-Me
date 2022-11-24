@@ -43,7 +43,7 @@ namespace Characters.AI
 
         public void Test()
         {
-            Path = PathBuilder.BuildPath(new Vector2Int(0, 0), 50);
+            Path = PathBuilder.BuildPath(new Vector2Int(0, 0), 2);
 
             // var step = 1;
             //
