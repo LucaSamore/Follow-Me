@@ -13,7 +13,9 @@ namespace Characters.AI.Algorithms
         private static readonly int HorizontalAndVerticalCost = 10;
         private static readonly int DiagonalCost = 14;
         private static readonly int AlgorithmIterations = 5;
-        
+
+        private readonly ISet<List<Node<Vector2Int>>> _generatedPaths = new HashSet<List<Node<Vector2Int>>>();
+
         private readonly Func<IDictionary<Vector3,Vector2Int>, Vector2Int, Vector3> _getKeyFromValue = (map, v2) =>
             map.FirstOrDefault(x => x.Value.Equals(v2)).Key;
 
@@ -25,9 +27,20 @@ namespace Characters.AI.Algorithms
             var source = new Node<Vector2Int>(startingPosition) { Cost = 0, State = NodeState.Open };
             var destination = ChooseDestination(source, depth);
             Debug.Log($"Destination: {destination.Element}");
-            Nodes.Add(source);
-            var path = FindShortestPath(destination).ToList();
-            path.Reverse();
+            
+            for (var i = 0; i < AlgorithmIterations; i++)
+            {
+                Nodes.Add(source);
+                var path = FindShortestPath(destination);
+                _generatedPaths.Add(path);
+                Nodes.Clear();
+                Nodes.AddRange(NodeUtil.MapToNodes(map).ToList());
+                RemovePathFromMap(path);
+                //Nodes = NodeUtil.MapToNodes(map).ToList();
+            }
+
+            var finalPath = ChooseRandomPath();
+            finalPath.ForEach(Debug.Log);
 
             // return path
             //     .Select(node => new Tuple<Vector3, Vector2Int>(_getKeyFromValue(map, node.Element), node.Element))
@@ -45,7 +58,7 @@ namespace Characters.AI.Algorithms
             return items[new Random().Next(0, items.Length - 1)];
         }
         
-        private IEnumerable<Node<Vector2Int>> FindShortestPath(Node<Vector2Int> destination)
+        private List<Node<Vector2Int>> FindShortestPath(Node<Vector2Int> destination)
         {
             var end = false;
             var path = new List<Node<Vector2Int>>();
@@ -75,17 +88,17 @@ namespace Characters.AI.Algorithms
                 end = closedNodes.Select(cn => cn.Element).Where(v2 => v2.Equals(destination.Element)).ToArray().Length == 1;
                 openNodes = OpenNodesWithMinimumCost();
             }
-            
-            Nodes.ForEach(Debug.Log);
-            throw new NotImplementedException();
 
-            var current = closedNodes.Find(n => n.Equals(destination));
+            var current = closedNodes.Find(n => n.Element.Equals(destination.Element));
+            path.Add(current);
 
             while (current.Parent is not null)
             {
                 path.Add(current.Parent);
                 current = current.Parent;
             }
+
+            path.Reverse();
 
             return path;
         }
@@ -138,5 +151,16 @@ namespace Characters.AI.Algorithms
             toBeUpdated.Cost = cost;
             return true;
         }
+
+        private void RemovePathFromMap(ICollection<Node<Vector2Int>> path)
+        {
+            Nodes = Nodes
+                .Where(n => !n.Element.Equals(path.First().Element))
+                .Where(n => !n.Element.Equals(path.Last().Element))
+                .Where(n => !path.Select(p => p.Element).Contains(n.Element))
+                .ToList();
+        }
+
+        private List<Node<Vector2Int>> ChooseRandomPath() => _generatedPaths.ElementAt(new Random().Next(0, _generatedPaths.Count - 1));
     }
 }
