@@ -17,26 +17,26 @@ namespace Characters.AI.Algorithms
         private readonly Func<IDictionary<Vector3,Vector2Int>, Vector2Int, Vector3> _getKeyFromValue = (map, v2) =>
             map.FirstOrDefault(x => x.Value.Equals(v2)).Key;
 
-        private IEnumerable<Node<Vector2Int>> Nodes { get; set; }
+        private List<Node<Vector2Int>> Nodes { get; set; }
 
         public IList<Tuple<Vector3,Vector2Int>> CreatePath(IDictionary<Vector3,Vector2Int> map, Vector2Int startingPosition, int depth)
         {
-            Nodes = NodeUtil.MapToNodes(map);
+            Nodes = NodeUtil.MapToNodes(map).ToList();
             var source = new Node<Vector2Int>(startingPosition) { Cost = 0, State = NodeState.Open };
             var destination = ChooseDestination(source, depth);
             Debug.Log($"Destination: {destination.Element}");
-            Nodes = Nodes.Append(source);
+            Nodes.Add(source);
             var path = FindShortestPath(destination).ToList();
             path.Reverse();
 
-            return path
-                .Select(node => new Tuple<Vector3, Vector2Int>(_getKeyFromValue(map, node.Element), node.Element))
-                .ToList();
+            // return path
+            //     .Select(node => new Tuple<Vector3, Vector2Int>(_getKeyFromValue(map, node.Element), node.Element))
+            //     .ToList();
             
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        private Node<Vector2Int> ChooseDestination(Node<Vector2Int> source, int depth)
+        private Node<Vector2Int> ChooseDestination(Node<Vector2Int> source, int depth) // OK!
         {
             var items = Nodes.Where(
                 n => Math.Abs(n.Element.x - source.Element.x) >= depth &&
@@ -47,34 +47,37 @@ namespace Characters.AI.Algorithms
         
         private IEnumerable<Node<Vector2Int>> FindShortestPath(Node<Vector2Int> destination)
         {
-            var i = 0;
+            var end = false;
             var path = new List<Node<Vector2Int>>();
             var closedNodes = new List<Node<Vector2Int>>();
             var openNodes = OpenNodesWithMinimumCost();
 
-            while (i < 5)
+            while (!end)
             {
                 foreach (var node in openNodes)
                 {
                     node.State = NodeState.Close;
-                    var ncn = NonClosedNeighbours(node).ToList();
-                    ncn.ForEach(n => n.State = NodeState.Open);
-                    ncn.ForEach(n =>
+                    var nonClosedNeighbours = NonClosedNeighbours(node);
+                    nonClosedNeighbours.ForEach(n => n.State = NodeState.Open);
+
+                    nonClosedNeighbours.ForEach(n =>
                     {
                         var neighbourWithMinCost = NeighbourWithMinimumCost(n);
-                    
+
                         if (TryUpdateCost(n, neighbourWithMinCost))
                         {
                             n.Parent = neighbourWithMinCost;
                         }
                     });
+                
                     closedNodes.Add(node);
                 }
+                end = closedNodes.Select(cn => cn.Element).Where(v2 => v2.Equals(destination.Element)).ToArray().Length == 1;
                 openNodes = OpenNodesWithMinimumCost();
-                i++;
             }
             
-            closedNodes.ForEach(n=> Debug.Log($"Nodo: {n.Element} | {n.Cost} | {n.State}"));
+            Nodes.ForEach(Debug.Log);
+            throw new NotImplementedException();
 
             var current = closedNodes.Find(n => n.Equals(destination));
 
@@ -87,15 +90,18 @@ namespace Characters.AI.Algorithms
             return path;
         }
         
-        private IEnumerable<Node<Vector2Int>> OpenNodesWithMinimumCost()
+        private List<Node<Vector2Int>> OpenNodesWithMinimumCost() // OK!
         {
             return Nodes
                 .Where(n => n.State == NodeState.Open)
-                .Where(on => on.Cost == NodeWithMinimumCost().Cost);
+                .Where(on => on.Cost == NodeWithMinimumCost().Cost)
+                .ToList();
         }
 
-        private Node<Vector2Int> NodeWithMinimumCost() => 
-            Nodes.First(n => n.Cost == Nodes.Select(n1 => n1.Cost).Min());
+        private Node<Vector2Int> NodeWithMinimumCost() => // OK!
+            Nodes.First(n => n.Cost == Nodes
+                .Where(n1 => n1.State == NodeState.Open)
+                .Select(n1 => n1.Cost).Min());
 
         private static int GetMinimumCost(IEnumerable<Node<Vector2Int>> nodes) =>
             nodes.Select(n => n.Cost).Min();
@@ -107,21 +113,22 @@ namespace Characters.AI.Algorithms
                     Enumerable.Range(node.Element.y - 1, NeighbourDistance).Select(vv => new Vector2Int(kk, vv)))
                 .Where(p => Nodes.Select(n => n.Element).Contains(p))
                 .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)));
-
+            
             return neighbours.First(n => n.Cost == GetMinimumCost(neighbours));
         }
 
-        private IEnumerable<Node<Vector2Int>> NonClosedNeighbours(Node<Vector2Int> node)
+        private List<Node<Vector2Int>> NonClosedNeighbours(Node<Vector2Int> node) // OK!
         {
-            return Enumerable.Range(node.Element.x - 1, NeighbourDistance)
-                .SelectMany(kk => 
+             return Enumerable.Range(node.Element.x - 1, NeighbourDistance)
+                .SelectMany(kk =>
                     Enumerable.Range(node.Element.y - 1, NeighbourDistance).Select(vv => new Vector2Int(kk, vv)))
                 .Where(p => Nodes.Select(n => n.Element).Contains(p))
                 .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)))
-                .Where(n => n.State != NodeState.Close);
+                .Where(n => n.State != NodeState.Close)
+                .ToList();
         }
 
-        private static bool TryUpdateCost(Node<Vector2Int> toBeUpdated, Node<Vector2Int> from)
+        private static bool TryUpdateCost(Node<Vector2Int> toBeUpdated, Node<Vector2Int> from) // OK!
         {
             var cost = from.Cost + (NodeUtil.IsDiagonalNeighbour(from, toBeUpdated)
                 ? DiagonalCost

@@ -22,6 +22,7 @@ namespace Characters.AI.Algorithms.Util
         public override string ToString() =>
             $"Element: {Element} | " +
             $"Cost: {Cost} | " +
-            $"Parent: {Parent?.Element}";
+            $"Parent: {Parent?.Element} | " +
+            $"State: {State}";
     }
 }
