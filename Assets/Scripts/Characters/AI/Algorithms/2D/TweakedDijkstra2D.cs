@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Characters.AI.Algorithms.Util;
+using JetBrains.Annotations;
 using Map;
 using UnityEngine;
 using Random = System.Random;
@@ -13,9 +14,8 @@ namespace Characters.AI.Algorithms._2D
         private static readonly int NeighbourDistance = 3;
         private static readonly int HorizontalAndVerticalCost = 10;
         private static readonly int DiagonalCost = 14;
-        private static readonly int AlgorithmIterations = 6;
-
         private readonly ISet<IList<Node<Vector2Int>>> _generatedPaths = new HashSet<IList<Node<Vector2Int>>>();
+        private int _algorithmIterations;
         private List<Node<Vector2Int>> Nodes { get; set; }
 
         public IList<Tuple<Vector3,Vector2Int>> CreatePath(IDictionary<Vector3,Vector2Int> map, Vector2Int startingPosition, int depth)
@@ -23,9 +23,11 @@ namespace Characters.AI.Algorithms._2D
             Nodes = NodeUtil.MapToNodes(map).ToList();
             var source = new Node<Vector2Int>(startingPosition) { Cost = 0, State = NodeState.Open };
             var destination = ChooseDestination(source, depth);
+            _algorithmIterations = SetIterations(destination);
             Debug.Log($"Destination: {destination.Element}");
+            Debug.Log($"Iterations: {_algorithmIterations}");
             
-            for (var i = 0; i < AlgorithmIterations; i++)
+            for (var i = 0; i < _algorithmIterations; i++)
             {
                 Nodes.Add(source);
                 var path = FindShortestPath(destination);
@@ -35,26 +37,37 @@ namespace Characters.AI.Algorithms._2D
             }
 
             var finalPath = ChooseRandomPath();
-
+            
             foreach (var p in _generatedPaths)
             {
                 Debug.Log("Path");
                 p.ToList().ForEach(e => Debug.Log(e.Element));
             }
 
-            return finalPath
-                .Select(n => 
+            return finalPath?.Select(n =>
                     new Tuple<Vector3, Vector2Int>(MapUtil.GetKeyFromValue(map, n.Element), n.Element))
                 .ToList();
         }
 
         private Node<Vector2Int> ChooseDestination(Node<Vector2Int> source, int depth)
         {
-            var items = Nodes.Where(
-                n => Math.Abs(n.Element.x - source.Element.x) >= depth &&
-                                       Math.Abs(n.Element.y - source.Element.y) >= depth).ToArray();
+            // var items = Nodes.Where(
+            //     n => Math.Abs(n.Element.x - source.Element.x) >= depth &&
+            //                            Math.Abs(n.Element.y - source.Element.y) >= depth).ToArray();
+            
+            //return Nodes[new Random().Next(0, Nodes.Count - 1)];
+            return Nodes.First(n => n.Element.Equals(new Vector2Int(3, 2)));
+        }
 
-            return items[new Random().Next(0, items.Length - 1)];
+        private int SetIterations(Node<Vector2Int> destination)
+        {
+            return Enumerable
+                .Range(destination.Element.x - 1, NeighbourDistance)
+                .SelectMany(kk => Enumerable.Range(destination.Element.y - 1, NeighbourDistance)
+                    .Select(vv => new Vector2Int(kk, vv)))
+                .Where(p => Nodes.Select(n => n.Element).Contains(p))
+                .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)))
+                .Count(n => n.State != NodeState.Used) - 1;
         }
         
         #region DIJKSTRA ALGORITHM
@@ -86,11 +99,16 @@ namespace Characters.AI.Algorithms._2D
                 
                     closedNodes.Add(node);
                 }
-                end = closedNodes.Select(cn => cn.Element).Where(v2 => v2.Equals(destination.Element)).ToArray().Length == 1;
+                
+                end = closedNodes
+                    .Select(cn => cn.Element)
+                    .Where(v2 => v2.Equals(destination.Element))
+                    .ToArray().Length == 1;
+                
                 openNodes = OpenNodesWithMinimumCost();
             }
 
-            var current = closedNodes.Find(n => n.Element.Equals(destination.Element));
+            var current = destination;
             path.Add(current);
 
             while (current.Parent is not null)
@@ -103,7 +121,7 @@ namespace Characters.AI.Algorithms._2D
 
             return path;
         }
-        
+
         private IList<Node<Vector2Int>> OpenNodesWithMinimumCost() =>
             Nodes
                 .Where(n => n.State == NodeState.Open)
@@ -181,10 +199,12 @@ namespace Characters.AI.Algorithms._2D
                 .ToList()
                 .ForEach(n => n.State = NodeState.Used);
         }
-
-        private IList<Node<Vector2Int>> ChooseRandomPath() => 
-            _generatedPaths.ElementAt(new Random().Next(0, _generatedPaths.Count - 1));
         
+        [CanBeNull]
+        private IList<Node<Vector2Int>> ChooseRandomPath() => _generatedPaths.Count > 0 ? 
+            _generatedPaths.ElementAt(new Random().Next(0, _generatedPaths.Count - 1)) : null;
+
+
         #endregion
     }
 }

@@ -43,10 +43,10 @@ namespace Characters.AI
 
         public void Test()
         {
-            Path = PathBuilder2D.BuildPath(new Vector2Int(0, 0), 2);
+            Path = PathBuilder2D.BuildPath(new Vector2Int(0, 0), 1);
 
             var step = 1;
-            
+
             foreach (var p in Path)
             {
                 Debug.Log($"Step: {step}, Position: ({p.Item1},{p.Item2})");
