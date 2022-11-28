@@ -34,10 +34,10 @@ namespace Game
             // Tilemap = MapUtil.Merge(MapUtil.Map(playerZone, playerZoneCenter.transform.position), 
             //     MapUtil.Map(opponentZone, opponentZoneCenter.transform.position));
             
-            PlayerMap = MapUtil.Map(playerZone, playerZoneCenter.transform.position);
-            OpponentMap = MapUtil.Map(opponentZone, opponentZoneCenter.transform.position);
+            PlayerMap = MapUtil.Map2D(playerZone, playerZoneCenter.transform.position);
+            OpponentMap = MapUtil.Map2D(opponentZone, opponentZoneCenter.transform.position);
 
-            _opponentController.PathBuilder2D = new PathBuilder<Vector2Int>(OpponentMap, new TweakedDijkstra());
+            _opponentController.PathBuilder2D = new PathBuilder<Vector2Int>(OpponentMap, new TweakedDijkstra2D());
             _opponentController.Test();
             //_opponentController.Walk();
         }
