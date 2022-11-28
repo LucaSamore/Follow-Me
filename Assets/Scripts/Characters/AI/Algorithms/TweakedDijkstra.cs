@@ -12,7 +12,7 @@ namespace Characters.AI.Algorithms
         private static readonly int NeighbourDistance = 3;
         private static readonly int HorizontalAndVerticalCost = 10;
         private static readonly int DiagonalCost = 14;
-        private static readonly int AlgorithmIterations = 5;
+        private static readonly int AlgorithmIterations = 6;
 
         private readonly ISet<List<Node<Vector2Int>>> _generatedPaths = new HashSet<List<Node<Vector2Int>>>();
 
@@ -33,14 +33,19 @@ namespace Characters.AI.Algorithms
                 Nodes.Add(source);
                 var path = FindShortestPath(destination);
                 _generatedPaths.Add(path);
-                Nodes.Clear();
-                Nodes.AddRange(NodeUtil.MapToNodes(map).ToList());
+                ResetMap();
                 RemovePathFromMap(path);
-                //Nodes = NodeUtil.MapToNodes(map).ToList();
+                //throw new NotImplementedException();
             }
 
             var finalPath = ChooseRandomPath();
             finalPath.ForEach(Debug.Log);
+
+            // foreach (var p in _generatedPaths)
+            // {
+            //     Debug.Log("Path");
+            //     p.ForEach(e => Debug.Log(e.Element));
+            // }
 
             // return path
             //     .Select(node => new Tuple<Vector3, Vector2Int>(_getKeyFromValue(map, node.Element), node.Element))
@@ -49,7 +54,7 @@ namespace Characters.AI.Algorithms
             throw new NotImplementedException();
         }
 
-        private Node<Vector2Int> ChooseDestination(Node<Vector2Int> source, int depth) // OK!
+        private Node<Vector2Int> ChooseDestination(Node<Vector2Int> source, int depth)
         {
             var items = Nodes.Where(
                 n => Math.Abs(n.Element.x - source.Element.x) >= depth &&
@@ -58,6 +63,7 @@ namespace Characters.AI.Algorithms
             return items[new Random().Next(0, items.Length - 1)];
         }
         
+        #region DIJKSTRA ALGORITHM
         private List<Node<Vector2Int>> FindShortestPath(Node<Vector2Int> destination)
         {
             var end = false;
@@ -103,7 +109,7 @@ namespace Characters.AI.Algorithms
             return path;
         }
         
-        private List<Node<Vector2Int>> OpenNodesWithMinimumCost() // OK!
+        private List<Node<Vector2Int>> OpenNodesWithMinimumCost()
         {
             return Nodes
                 .Where(n => n.State == NodeState.Open)
@@ -111,7 +117,7 @@ namespace Characters.AI.Algorithms
                 .ToList();
         }
 
-        private Node<Vector2Int> NodeWithMinimumCost() => // OK!
+        private Node<Vector2Int> NodeWithMinimumCost() =>
             Nodes.First(n => n.Cost == Nodes
                 .Where(n1 => n1.State == NodeState.Open)
                 .Select(n1 => n1.Cost).Min());
@@ -125,7 +131,8 @@ namespace Characters.AI.Algorithms
                 .SelectMany(kk =>
                     Enumerable.Range(node.Element.y - 1, NeighbourDistance).Select(vv => new Vector2Int(kk, vv)))
                 .Where(p => Nodes.Select(n => n.Element).Contains(p))
-                .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)));
+                .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)))
+                .Where(n => n.State != NodeState.Used);
             
             return neighbours.First(n => n.Cost == GetMinimumCost(neighbours));
         }
@@ -137,11 +144,11 @@ namespace Characters.AI.Algorithms
                     Enumerable.Range(node.Element.y - 1, NeighbourDistance).Select(vv => new Vector2Int(kk, vv)))
                 .Where(p => Nodes.Select(n => n.Element).Contains(p))
                 .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)))
-                .Where(n => n.State != NodeState.Close)
+                .Where(n => n.State != NodeState.Close && n.State != NodeState.Used)
                 .ToList();
         }
 
-        private static bool TryUpdateCost(Node<Vector2Int> toBeUpdated, Node<Vector2Int> from) // OK!
+        private static bool TryUpdateCost(Node<Vector2Int> toBeUpdated, Node<Vector2Int> from)
         {
             var cost = from.Cost + (NodeUtil.IsDiagonalNeighbour(from, toBeUpdated)
                 ? DiagonalCost
@@ -152,15 +159,40 @@ namespace Characters.AI.Algorithms
             return true;
         }
 
+        private void ResetMap()
+        {
+            Nodes
+                .Where(n => !n.Element.Equals(Vector2Int.zero))
+                .Where(n => n.State != NodeState.Used)
+                .ToList()
+                .ForEach(n =>
+            {
+                n.Cost = int.MaxValue;
+                n.Parent = null;
+                n.State = NodeState.None;
+            });
+
+            Nodes.First(n => n.Element.Equals(Vector2Int.zero)).State = NodeState.Open;
+        }
+        
+        #endregion
+        
+        #region TWEAK
+        
         private void RemovePathFromMap(ICollection<Node<Vector2Int>> path)
         {
-            Nodes = Nodes
-                .Where(n => !n.Element.Equals(path.First().Element))
-                .Where(n => !n.Element.Equals(path.Last().Element))
-                .Where(n => !path.Select(p => p.Element).Contains(n.Element))
-                .ToList();
+            Nodes
+                .Where(n => path
+                    .ToList()
+                    .GetRange(1, path.Count - 2)
+                    .Select(x => x.Element)
+                    .Contains(n.Element))
+                .ToList()
+                .ForEach(n => n.State = NodeState.Used);
         }
 
         private List<Node<Vector2Int>> ChooseRandomPath() => _generatedPaths.ElementAt(new Random().Next(0, _generatedPaths.Count - 1));
+        
+        #endregion
     }
 }
