@@ -6,7 +6,7 @@ using Map;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Characters.AI.Algorithms
+namespace Characters.AI.Algorithms._2D
 {
     public sealed class TweakedDijkstra2D : IPathStrategy<Vector2Int>
     {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Characters.AI;
 using Characters.AI.Algorithms;
+using Characters.AI.Algorithms._2D;
 using Characters.Player;
 using Map;
 using UnityEngine;
