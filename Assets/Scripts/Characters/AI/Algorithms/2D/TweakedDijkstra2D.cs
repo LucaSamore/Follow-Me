@@ -22,7 +22,7 @@ namespace Characters.AI.Algorithms._2D
         {
             Nodes = NodeUtil.MapToNodes(map).ToList();
             var source = new Node<Vector2Int>(startingPosition) { Cost = 0, State = NodeState.Open };
-            var destination = ChooseDestination(source, depth);
+            var destination = ChooseDestination(depth);
             _algorithmIterations = SetIterations(destination);
             Debug.Log($"Destination: {destination.Element}");
             Debug.Log($"Iterations: {_algorithmIterations}");
@@ -49,14 +49,17 @@ namespace Characters.AI.Algorithms._2D
                 .ToList();
         }
 
-        private Node<Vector2Int> ChooseDestination(Node<Vector2Int> source, int depth)
+        private Node<Vector2Int> ChooseDestination(int depth)
         {
-            // var items = Nodes.Where(
-            //     n => Math.Abs(n.Element.x - source.Element.x) >= depth &&
-            //                            Math.Abs(n.Element.y - source.Element.y) >= depth).ToArray();
+            // var rng = new Random();
+            // var items = Nodes
+            //     .Where(n => Math.Abs(n.Element.x) >= depth || 
+            //              Math.Abs(n.Element.y) >= depth)
+            //     .ToList();
+            //
+            // return items.OrderBy(i => rng.Next()).First();
             
-            //return Nodes[new Random().Next(0, Nodes.Count - 1)];
-            return Nodes.First(n => n.Element.Equals(new Vector2Int(3, 2)));
+            return Nodes[4];
         }
 
         private int SetIterations(Node<Vector2Int> destination)
