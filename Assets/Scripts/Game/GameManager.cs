@@ -40,7 +40,6 @@ namespace Game
             //
             // _opponentController.PathBuilder2D = new PathBuilder<Vector2Int>(OpponentMap, new TweakedDijkstra2D());
             // _opponentController.Test();
-            //_opponentController.Walk();
         }
 
         private void Update()

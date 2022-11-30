@@ -52,11 +52,11 @@ namespace Characters.Player
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
             if (hit.collider.name != "Cube") return;
-            if (_previousTile is not null) _previousTile.material.SetColor(EmissionColor, Color.black);
+            //if (_previousTile is not null) _previousTile.material.SetColor(EmissionColor, Color.black);
             var renderer = hit.gameObject.GetComponent<Renderer>();
             renderer.material.EnableKeyword("_EMISSION");
             renderer.material.SetColor(EmissionColor, Color.green);
-            _previousTile = renderer;
+            //_previousTile = renderer;
         }
 
         private void TakeDamage(int damage)
