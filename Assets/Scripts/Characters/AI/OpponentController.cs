@@ -5,6 +5,7 @@ using Characters.HealthBar;
 using UnityEngine;
 using UnityEngine.AI;
 using JetBrains.Annotations;
+using Map.CustomNavMesh;
 
 namespace Characters.AI
 {
@@ -12,50 +13,31 @@ namespace Characters.AI
     {
         private static readonly float Speed = 3f;
         private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
-        
+
+        [SerializeField] private Transform navigable;
+        [SerializeField] private Transform startingPosition;
+        [SerializeField] private bool isMap3D;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private int maxHp;
         [SerializeField] private int currentHp;
         [SerializeField] private HealthBarController healthBar;
+        
         [CanBeNull] private Renderer _previousTile;
         private float _gravity;
-        private NavMeshAgent _agent;
-        private Vector3 _desVelocity;
-        private Transform _randomDestination;
-        
+        private INavMeshFactory _navMeshFactory;
         public PathBuilder<Vector2Int> PathBuilder2D { get; set; }
         public IList<Tuple<Vector3,Vector2Int>> Path { get; set; }
-
-        private void Awake()
-        {
-            _agent = GetComponent<NavMeshAgent>();
-        }
 
         private void Start()
         {
             _gravity = -9.81f * Time.deltaTime;
+            _navMeshFactory = new NavMeshFactory();
             healthBar.SetMaxHealth(maxHp);
-            SetNewDestination();
         }
     
         private void Update()
         {
             characterController.Move(new Vector3(0f, _gravity, 0f));
-
-            var position = _randomDestination.position;
-            _agent.destination = position;
-            _desVelocity = _agent.desiredVelocity;
-            
-            _agent.updatePosition = false;
-            _agent.updateRotation = false;
-            
-            var lookPos = position - transform.position;
-            lookPos.y = 0f;
-            var targetRot = Quaternion.LookRotation(lookPos);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * Speed);
-
-            characterController.Move(_desVelocity.normalized * (2f * Time.deltaTime));
-            _agent.velocity = characterController.velocity;
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -90,12 +72,6 @@ namespace Characters.AI
             renderer.material.EnableKeyword("_EMISSION");
             renderer.material.SetColor(EmissionColor, Color.green);
             _previousTile = renderer;
-        }
-
-        private void SetNewDestination()
-        {
-            var children = GameObject.Find("Opponent Zone").transform;
-            _randomDestination = children.GetChild(new System.Random().Next(0, children.childCount - 1));
         }
     }
 }
