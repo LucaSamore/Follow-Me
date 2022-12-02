@@ -3,5 +3,9 @@
     public interface IAgent
     {
         IAgent Clone();
+        
+        void Walk();
+        
+        void Jump();
     }
 }

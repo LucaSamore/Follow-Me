@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Characters.AI.Algorithms._2D;
+using Characters.AI.CustomAgent;
 using Characters.HealthBar;
 using UnityEngine;
-using UnityEngine.AI;
 using JetBrains.Annotations;
 using Map.CustomNavMesh;
 
@@ -16,7 +16,7 @@ namespace Characters.AI
 
         [SerializeField] private Transform navigable;
         [SerializeField] private Transform startingPosition;
-        [SerializeField] private bool isMap3D;
+        [SerializeField] private bool isMap2D;
         [SerializeField] private CharacterController characterController;
         [SerializeField] private int maxHp;
         [SerializeField] private int currentHp;
@@ -25,13 +25,23 @@ namespace Characters.AI
         [CanBeNull] private Renderer _previousTile;
         private float _gravity;
         private INavMeshFactory _navMeshFactory;
-        public PathBuilder<Vector2Int> PathBuilder2D { get; set; }
-        public IList<Tuple<Vector3,Vector2Int>> Path { get; set; }
+        private IAgent _agent;
+        
+        public void AgentWalk() => _agent.Walk();
+
+        public void AgentJump() => _agent.Jump();
+
+        private void Awake()
+        {
+            _navMeshFactory = new NavMeshFactory();
+            _agent = isMap2D ?
+                new Agent<Vector2Int>(_navMeshFactory.BakeMesh2D(navigable, startingPosition.position), new TweakedDijkstra2D()) : 
+                new Agent<Vector3Int>(_navMeshFactory.BakeMesh3D(navigable, startingPosition.position), null);
+        }
 
         private void Start()
         {
             _gravity = -9.81f * Time.deltaTime;
-            _navMeshFactory = new NavMeshFactory();
             healthBar.SetMaxHealth(maxHp);
         }
     
@@ -49,19 +59,6 @@ namespace Characters.AI
         {
             currentHp -= damage;
             healthBar.SetHealth(currentHp);
-        }
-
-        public void Test()
-        {
-            Path = PathBuilder2D.BuildPath(new Vector2Int(0, 0), 3);
-
-            var step = 1;
-
-            foreach (var p in Path)
-            {
-                Debug.Log($"Step: {step}, Position: ({p.Item1},{p.Item2})");
-                step++;
-            }
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

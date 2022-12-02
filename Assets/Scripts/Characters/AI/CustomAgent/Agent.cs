@@ -7,8 +7,8 @@ namespace Characters.AI.CustomAgent
 {
     public sealed class Agent<T> : IAgent where T : struct
     {
-        public IAgentCommand WalkCommand { get; }
-        public IAgentCommand JumpCommand { get; }
+        public IAgentCommand WalkCommand { get; set; }
+        public IAgentCommand JumpCommand { get; set; }
 
         public Agent(IDictionary<Vector3,T> navmesh, IPathStrategy<T> defaultAlgorithm)
         {
@@ -22,6 +22,8 @@ namespace Characters.AI.CustomAgent
             JumpCommand = agent.JumpCommand;
         }
 
+        public void Walk() => WalkCommand.Execute();
+        public void Jump() => JumpCommand.Execute();
         public IAgent Clone() => new Agent<T>(this);
     }
 }

@@ -1,7 +1,6 @@
+using System;
 using System.Collections.Generic;
 using Characters.AI;
-using Characters.AI.Algorithms;
-using Characters.AI.Algorithms._2D;
 using Characters.Player;
 using Map;
 using UnityEngine;
@@ -35,15 +34,14 @@ namespace Game
             // Tilemap = MapUtil.Merge(MapUtil.Map(playerZone, playerZoneCenter.transform.position), 
             //     MapUtil.Map(opponentZone, opponentZoneCenter.transform.position));
             
-            PlayerMap = MapUtil.Map2D(playerZone, playerZoneCenter.transform.position);
-            OpponentMap = MapUtil.Map2D(opponentZone, opponentZoneCenter.transform.position);
-            
-            //_opponentController.PathBuilder2D = new PathBuilder<Vector2Int>(OpponentMap, new TweakedDijkstra2D());
-            //_opponentController.Test();
+            // PlayerMap = MapUtil.Map2D(playerZone, playerZoneCenter.transform.position);
+            // OpponentMap = MapUtil.Map2D(opponentZone, opponentZoneCenter.transform.position);
+            _opponentController.AgentWalk();
         }
 
         private void Update()
         {
+            
         }
     }
 }

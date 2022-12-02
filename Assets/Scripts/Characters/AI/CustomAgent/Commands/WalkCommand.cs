@@ -1,4 +1,6 @@
-﻿namespace Characters.AI.CustomAgent.Commands
+﻿using UnityEngine;
+
+namespace Characters.AI.CustomAgent.Commands
 {
     public sealed class WalkCommand<T> : IAgentCommand where T : struct
     {
@@ -8,7 +10,7 @@
         
         public void Execute()
         {
-            throw new System.NotImplementedException();
+            Debug.Log("WALK");
         }
     }
 }
