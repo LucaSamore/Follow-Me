@@ -25,18 +25,19 @@ namespace Characters.AI
         [CanBeNull] private Renderer _previousTile;
         private float _gravity;
         private INavMeshFactory _navMeshFactory;
-        private IAgent _agent;
+        private IList<IAgent> _agents;
         
-        public void AgentWalk() => _agent.Walk();
+        public void AgentWalk() => _agents[0].Walk();
 
-        public void AgentJump() => _agent.Jump();
+        public void AgentJump() => _agents[0].Jump();
 
         private void Awake()
         {
+            _agents = new List<IAgent>();
             _navMeshFactory = new NavMeshFactory();
-            _agent = isMap2D ?
+            _agents.Add(isMap2D ?
                 new Agent<Vector2Int>(_navMeshFactory.BakeMesh2D(navigable, startingPosition.position), new TweakedDijkstra2D()) : 
-                new Agent<Vector3Int>(_navMeshFactory.BakeMesh3D(navigable, startingPosition.position), null);
+                new Agent<Vector3Int>(_navMeshFactory.BakeMesh3D(navigable, startingPosition.position), null));
         }
 
         private void Start()
