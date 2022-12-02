@@ -1,10 +1,20 @@
-﻿namespace Characters.AI.CustomAgent
+﻿using Characters.AI.CustomAgent.Commands;
+
+namespace Characters.AI.CustomAgent
 {
     public sealed class Agent : IAgent
     {
-        public IAgent Clone()
+        public IAgentCommand WalkCommand { get; set; } = new WalkCommand();
+        public IAgentCommand JumpCommand { get; set; } = new JumpCommand();
+        
+        public Agent() {}
+
+        public Agent(Agent agent)
         {
-            throw new System.NotImplementedException();
+            WalkCommand = agent.WalkCommand;
+            JumpCommand = agent.JumpCommand;
         }
+
+        public IAgent Clone() => new Agent(this);
     }
 }
