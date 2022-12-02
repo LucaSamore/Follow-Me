@@ -36,8 +36,12 @@ namespace Characters.AI
             _agents = new List<IAgent>();
             _navMeshFactory = new NavMeshFactory();
             _agents.Add(isMap2D ?
-                new Agent<Vector2Int>(_navMeshFactory.BakeMesh2D(navigable, startingPosition.position), new TweakedDijkstra2D()) : 
-                new Agent<Vector3Int>(_navMeshFactory.BakeMesh3D(navigable, startingPosition.position), null));
+                new Agent<Vector2Int>(characterController,_navMeshFactory.BakeMesh2D(navigable, startingPosition.position), 
+                    new TweakedDijkstra2D(), 
+                    new Vector2Int(0,0)) : 
+                new Agent<Vector3Int>(characterController,_navMeshFactory.BakeMesh3D(navigable, startingPosition.position), 
+                    null, 
+                    new Vector3Int(0,0,0)));
         }
 
         private void Start()
@@ -48,7 +52,8 @@ namespace Characters.AI
     
         private void Update()
         {
-            characterController.Move(new Vector3(0f, _gravity, 0f));
+            //characterController.Move(new Vector3(0f, _gravity, 0f));
+            AgentWalk();
 
             if (Input.GetKeyDown(KeyCode.Space))
             {

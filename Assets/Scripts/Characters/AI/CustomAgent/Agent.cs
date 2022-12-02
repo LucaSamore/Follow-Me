@@ -10,9 +10,13 @@ namespace Characters.AI.CustomAgent
         public IAgentCommand WalkCommand { get; set; }
         public IAgentCommand JumpCommand { get; set; }
 
-        public Agent(IDictionary<Vector3,T> navmesh, IPathStrategy<T> defaultAlgorithm)
+        public Agent(
+            CharacterController characterController,
+            IDictionary<Vector3,T> navmesh, 
+            IPathStrategy<T> defaultAlgorithm, 
+            T startingPosition)
         {
-            WalkCommand = new WalkCommand<T>(new PathBuilder<T>(navmesh, defaultAlgorithm));
+            WalkCommand = new WalkCommand<T>(characterController, new PathBuilder<T>(navmesh, defaultAlgorithm), startingPosition);
             JumpCommand = new JumpCommand();
         }
 
@@ -23,7 +27,9 @@ namespace Characters.AI.CustomAgent
         }
 
         public void Walk() => WalkCommand.Execute();
+        
         public void Jump() => JumpCommand.Execute();
+
         public IAgent Clone() => new Agent<T>(this);
     }
 }

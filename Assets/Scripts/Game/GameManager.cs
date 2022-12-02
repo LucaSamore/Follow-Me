@@ -36,7 +36,7 @@ namespace Game
             
             // PlayerMap = MapUtil.Map2D(playerZone, playerZoneCenter.transform.position);
             // OpponentMap = MapUtil.Map2D(opponentZone, opponentZoneCenter.transform.position);
-            _opponentController.AgentWalk();
+            //_opponentController.AgentWalk();
         }
 
         private void Update()

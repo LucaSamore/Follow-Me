@@ -37,12 +37,6 @@ namespace Characters.AI.Algorithms._2D
             }
 
             var finalPath = ChooseRandomPath();
-            
-            foreach (var p in _generatedPaths)
-            {
-                Debug.Log("Path");
-                p.ToList().ForEach(e => Debug.Log(e.Element));
-            }
 
             return finalPath?.Select(n =>
                     new Tuple<Vector3, Vector2Int>(MapUtil.GetKeyFromValue(map, n.Element), n.Element))
