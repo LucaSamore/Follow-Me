@@ -15,7 +15,7 @@ namespace Map
                     v => Vector2Int.RoundToInt(
                         new Vector2(v.x - startingPosition.x, v.z - startingPosition.z)));
 
-        public static IDictionary<Vector3, Vector2Int> Map3D(Transform zone, Vector3 startingPosition) =>
+        public static IDictionary<Vector3, Vector3Int> Map3D(Transform zone, Vector3 startingPosition) =>
             throw new NotImplementedException();
 
         public static Vector3 GetKeyFromValue<T>(IDictionary<Vector3,T> map, T v2) =>

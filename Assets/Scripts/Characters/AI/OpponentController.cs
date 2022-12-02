@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Characters.HealthBar;
 using UnityEngine;
 using UnityEngine.AI;
@@ -61,7 +62,7 @@ namespace Characters.AI
                 TakeDamage(5);
             }
         }
-    
+
         private void TakeDamage(int damage)
         {
             currentHp -= damage;
