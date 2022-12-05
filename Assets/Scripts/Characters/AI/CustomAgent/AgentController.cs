@@ -1,5 +1,6 @@
 using Characters.AI.Algorithms._2D;
 using Characters.AI.Algorithms._3D;
+using Map;
 using Map.CustomNavMesh;
 using UnityEngine;
 
@@ -50,6 +51,7 @@ namespace Characters.AI.CustomAgent
         {
             var newAgent = Instantiate(aiSource);
             Destroy(newAgent.GetComponent<AIController>());
+            newAgent.AddComponent<TileController>();
             _spawned = newAgent;
         }
     }
