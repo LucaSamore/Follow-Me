@@ -11,6 +11,7 @@ namespace Characters.AI.Algorithms._2D
                 .SelectMany(kk => Enumerable.Range(position.y - 1, NeighbourDistance)
                     .Select(vv => new Vector2Int(kk, vv)))
                 .Where(p => map.Values.Contains(p))
+                .Where(p => !_alreadyVisited.Contains(p))
                 .ToList();
     }
 }

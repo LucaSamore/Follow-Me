@@ -10,6 +10,8 @@ namespace Characters.AI.Algorithms
     {
         protected static readonly int NeighbourDistance = 3;
         
+        protected IList<T> _alreadyVisited = new List<T>();
+
         public IList<Tuple<Vector3,T>> CreatePath(IDictionary<Vector3,T> map, T startingPosition, int steps)
         {
             var path = new List<Tuple<Vector3,T>>();
@@ -27,11 +29,16 @@ namespace Characters.AI.Algorithms
 
         protected abstract IList<T> Neighbours(IDictionary<Vector3,T> map, T position);
 
-        protected virtual Tuple<Vector3,T> Next(IDictionary<Vector3,T> map, T position) => 
-            TakeRandomNeighbour(Neighbours(map, position))
+        protected virtual Tuple<Vector3, T> Next(IDictionary<Vector3, T> map, T position)
+        {
+            var neighbour = TakeRandomNeighbour(Neighbours(map, position)).ToList();
+            _alreadyVisited.Add(neighbour.First());
+            return neighbour
                 .Select(v2 =>
                     new Tuple<Vector3,T>(MapUtil.GetKeyFromValue(map, v2), v2))
                 .First();
+        }
+            
 
         protected virtual IEnumerable<T> TakeRandomNeighbour(IList<T> neighbours)
         {
