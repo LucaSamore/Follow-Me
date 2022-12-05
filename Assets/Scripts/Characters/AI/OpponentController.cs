@@ -17,15 +17,17 @@ namespace Characters.AI
         [SerializeField] private Transform navigable;
         [SerializeField] private Transform startingPosition;
         [SerializeField] private bool isMap2D;
-        [SerializeField] private CharacterController characterController;
         [SerializeField] private int maxHp;
         [SerializeField] private int currentHp;
         [SerializeField] private HealthBarController healthBar;
-        
+        [SerializeField] private GameObject agent;
+
+        private Rigidbody _rigidbody;
         [CanBeNull] private Renderer _previousTile;
         private float _gravity;
         private INavMeshFactory _navMeshFactory;
         private IList<IAgent> _agents;
+        private AgentMovement _agentMovement;
         
         public void AgentWalk() => _agents[0].Walk();
 
@@ -33,27 +35,35 @@ namespace Characters.AI
 
         private void Awake()
         {
-            _agents = new List<IAgent>();
-            _navMeshFactory = new NavMeshFactory();
-            _agents.Add(isMap2D ?
-                new Agent<Vector2Int>(characterController,_navMeshFactory.BakeMesh2D(navigable, startingPosition.position), 
-                    new TweakedDijkstra2D(), 
-                    new Vector2Int(0,0)) : 
-                new Agent<Vector3Int>(characterController,_navMeshFactory.BakeMesh3D(navigable, startingPosition.position), 
-                    null, 
-                    new Vector3Int(0,0,0)));
+            _agentMovement = agent.GetComponent<AgentMovement>();
         }
 
         private void Start()
         {
+            _rigidbody = GetComponent<Rigidbody>();
+            
+            _agents = new List<IAgent>();
+            _navMeshFactory = new NavMeshFactory();
+            _agents.Add(isMap2D ?
+                new Agent<Vector2Int>(transform, _agentMovement, _navMeshFactory.BakeMesh2D(navigable, startingPosition.position), 
+                    new TweakedDijkstra2D(), 
+                    new Vector2Int(0,0)) : 
+                new Agent<Vector3Int>(transform, _agentMovement, _navMeshFactory.BakeMesh3D(navigable, startingPosition.position), 
+                    null, 
+                    new Vector3Int(0,0,0)));
+            
             _gravity = -9.81f * Time.deltaTime;
             healthBar.SetMaxHealth(maxHp);
+            AgentWalk();
         }
     
         private void Update()
         {
             //characterController.Move(new Vector3(0f, _gravity, 0f));
-            AgentWalk();
+            //AgentWalk();
+            
+            // transform.position = Vector3.MoveTowards(transform.position, new Vector3(9.5f, 0f, 1.5f),
+            //     Speed * Time.deltaTime);
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -67,14 +77,14 @@ namespace Characters.AI
             healthBar.SetHealth(currentHp);
         }
 
-        private void OnControllerColliderHit(ControllerColliderHit hit)
+        private void OnCollisionEnter(Collision collision)
         {
-            if (hit.collider.name != "Cube") return;
-            if (_previousTile is not null) _previousTile.material.SetColor(EmissionColor, Color.black);
-            var renderer = hit.gameObject.GetComponent<Renderer>();
+            if (collision.collider.name != "Cube") return;
+            //if (_previousTile is not null) _previousTile.material.SetColor(EmissionColor, Color.black);
+            var renderer = collision.gameObject.GetComponent<Renderer>();
             renderer.material.EnableKeyword("_EMISSION");
             renderer.material.SetColor(EmissionColor, Color.green);
-            _previousTile = renderer;
+            //_previousTile = renderer;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Characters.AI.CustomAgent.Commands;
+﻿using System.Collections;
+using Characters.AI.CustomAgent.Commands;
 
 namespace Characters.AI.CustomAgent
 {
