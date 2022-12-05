@@ -6,26 +6,20 @@ namespace Characters.AI.CustomAgent
 {
     public sealed class AgentMovement : MonoBehaviour
     {
-        private static readonly float Speed = 5f;
-    
-        public void RunCoroutine(Transform agentTransform, IList<Vector3> path)
+        private static readonly float Seconds = .5f;
+        
+        public void RunCoroutine(Transform agentTransform, IList<Vector3> path) =>
+            StartCoroutine(SequenceStart(agentTransform, path));
+
+        private IEnumerator SequenceStart(Transform agentTransform, IList<Vector3> path)
         {
-            foreach (var position in path)
+            for (var i = 1; i < path.Count; i++)
             {
-                StartCoroutine(MoveOverSeconds(agentTransform, position, 2f));
+                yield return StartCoroutine(MoveOverSeconds(agentTransform, path[i], Seconds));
             }
         }
 
-        private IEnumerator MoveAICoroutine(Transform agentTransform, IList<Vector3> path) {
-            foreach(var item in path) {
-                while (Vector3.Distance(agentTransform.position, item) > .0001) {
-                    agentTransform.position = Vector3.MoveTowards(agentTransform.position, item, Speed * Time.deltaTime);
-                    yield return null;
-                }
-            }
-        }
-        
-        private IEnumerator MoveOverSeconds(Transform objectToMove, Vector3 end, float seconds)
+        private static IEnumerator MoveOverSeconds(Transform objectToMove, Vector3 end, float seconds)
         {
             float elapsedTime = 0;
             var startingPos = objectToMove.position;

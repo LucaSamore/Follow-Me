@@ -64,7 +64,7 @@ namespace Characters.AI.Algorithms
             //
             // return items.OrderBy(i => rng.Next()).First();
             
-            return Nodes[4];
+            return Nodes[6];
         }
         
         protected IList<Node<T>> OpenNodesWithMinimumCost() =>

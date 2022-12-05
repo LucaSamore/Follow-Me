@@ -54,7 +54,7 @@ namespace Characters.AI
             
             _gravity = -9.81f * Time.deltaTime;
             healthBar.SetMaxHealth(maxHp);
-            AgentWalk();
+            
         }
     
         private void Update()
@@ -64,9 +64,10 @@ namespace Characters.AI
             
             // transform.position = Vector3.MoveTowards(transform.position, new Vector3(9.5f, 0f, 1.5f),
             //     Speed * Time.deltaTime);
-
+            
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                AgentWalk();
                 TakeDamage(5);
             }
         }
