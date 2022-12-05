@@ -98,10 +98,10 @@ namespace Characters.AI.Algorithms._2D
             return true;
         }
 
-        protected override void ResetMap()
+        protected override void ResetMap(Vector2Int startingPosition)
         {
             Nodes
-                .Where(n => !n.Element.Equals(Vector2Int.zero))
+                .Where(n => !n.Element.Equals(startingPosition))
                 .Where(n => n.State != NodeState.Used)
                 .ToList()
                 .ForEach(n =>
@@ -111,7 +111,7 @@ namespace Characters.AI.Algorithms._2D
                     n.State = NodeState.None;
                 });
 
-            Nodes.First(n => n.Element.Equals(Vector2Int.zero)).State = NodeState.Open;
+            Nodes.First(n => n.Element.Equals(startingPosition)).State = NodeState.Open;
         }
     }
 }

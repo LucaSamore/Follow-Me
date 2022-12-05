@@ -30,7 +30,7 @@ namespace Characters.AI.Algorithms
                 Nodes.Add(source);
                 var path = FindShortestPath(destination);
                 _generatedPaths.Add(path);
-                ResetMap();
+                ResetMap(startingPosition);
                 RemovePathFromMap(path);
             }
 
@@ -51,7 +51,7 @@ namespace Characters.AI.Algorithms
 
         protected abstract bool TryUpdateCost(Node<T> toBeUpdated, Node<T> from);
 
-        protected abstract void ResetMap();
+        protected abstract void ResetMap(T startingPosition);
         
         protected virtual Node<T> ChooseDestination(int depth)
         {

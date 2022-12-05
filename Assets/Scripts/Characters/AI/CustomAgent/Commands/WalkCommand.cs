@@ -22,7 +22,7 @@ namespace Characters.AI.CustomAgent.Commands
         public void Execute()
         {
             var path = PathBuilder
-                .BuildPath(_startingPosition, 3)
+                .BuildPath(_startingPosition, 5)
                 .Select(t => t.Item1)
                 .ToList();
             

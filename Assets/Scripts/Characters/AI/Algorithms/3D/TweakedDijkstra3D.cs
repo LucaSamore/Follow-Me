@@ -31,7 +31,7 @@ namespace Characters.AI.Algorithms._3D
             throw new System.NotImplementedException();
         }
 
-        protected override void ResetMap()
+        protected override void ResetMap(Vector3Int startingPosition)
         {
             throw new System.NotImplementedException();
         }

@@ -1,53 +1,31 @@
 using System.Collections.Generic;
-using Characters.AI.Algorithms._2D;
 using Characters.AI.CustomAgent;
 using Characters.HealthBar;
 using UnityEngine;
 using JetBrains.Annotations;
-using Map.CustomNavMesh;
 
 namespace Characters.AI
 {
     public sealed class AIController : MonoBehaviour
     {
         private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
-
-        [SerializeField] private Transform navigable;
-        [SerializeField] private Transform startingPosition;
-        [SerializeField] private bool isMap2D;
+        
         [SerializeField] private int maxHp;
         [SerializeField] private int currentHp;
         [SerializeField] private HealthBarController healthBar;
-        [SerializeField] private GameObject agentObject;
+        [SerializeField] private GameObject agent;
         [SerializeField] private int howMany;
         
         [CanBeNull] private Renderer _previousTile;
-        private INavMeshFactory _navMeshFactory;
-        private IList<IAgent> _agents;
-        private AgentMovement _agentMovement;
-        
-        public void AgentWalk() => _agents[0].Walk();
-
-        public void AgentJump() => _agents[0].Jump();
+        private IList<GameObject> _agents;
 
         private void Awake()
         {
-            _agentMovement = agentObject.GetComponent<AgentMovement>();
-            _navMeshFactory = new NavMeshFactory();
+            _agents = new List<GameObject>();
         }
 
         private void Start()
         {
-            _agents = new List<IAgent>();
-            _navMeshFactory = new NavMeshFactory();
-            _agents.Add(isMap2D ?
-                new Agent<Vector2Int>(transform, _agentMovement, _navMeshFactory.BakeMesh2D(navigable, startingPosition.position), 
-                    new TweakedDijkstra2D(), 
-                    new Vector2Int(0,0)) : 
-                new Agent<Vector3Int>(transform, _agentMovement, _navMeshFactory.BakeMesh3D(navigable, startingPosition.position), 
-                    null, 
-                    new Vector3Int(0,0,0)));
-            
             healthBar.SetMaxHealth(maxHp);
             CreateMany();
         }
@@ -56,7 +34,11 @@ namespace Characters.AI
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                AgentWalk();
+                foreach (var a in _agents)
+                {
+                    a.GetComponent<AgentController>().Walk();
+                }
+                
                 TakeDamage(5);
             }
         }
@@ -83,16 +65,8 @@ namespace Characters.AI
 
             for (var i = 0; i < howMany; i++)
             {
-                var newAgent = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                newAgent.name = "AGENT 007";
-                newAgent.transform.parent = agentObject.transform;
-                newAgent.AddComponent<SphereCollider>();
-                newAgent.AddComponent<Rigidbody>();
-                newAgent.GetComponent<Rigidbody>().isKinematic = true;
-                newAgent.GetComponent<Renderer>().material = Resources.Load("Opponent Material", typeof(Material)) as Material;
-                newAgent.AddComponent<HealthBarController>();
-                newAgent.transform.position = new Vector3(6.5f, 1f, .5f);
-                //_agents.Add(newAgent);
+                // Si clona l’oggetto Agent
+                _agents.Add(Instantiate(agent));
             }
         }
     }
