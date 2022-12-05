@@ -37,7 +37,7 @@ namespace Characters.AI
             _navMeshFactory = new NavMeshFactory();
             _agents.Add(isMap2D ?
                 new Agent<Vector2Int>(characterController,_navMeshFactory.BakeMesh2D(navigable, startingPosition.position), 
-                    new TweakedDijkstra2Dv2(), 
+                    new TweakedDijkstra2D(), 
                     new Vector2Int(0,0)) : 
                 new Agent<Vector3Int>(characterController,_navMeshFactory.BakeMesh3D(navigable, startingPosition.position), 
                     null, 
