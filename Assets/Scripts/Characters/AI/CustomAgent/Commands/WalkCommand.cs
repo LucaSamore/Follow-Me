@@ -22,7 +22,7 @@ namespace Characters.AI.CustomAgent.Commands
         {
             var path = PathBuilder.BuildPath(_startingPosition, 3).Select(t => t.Item1).ToList();
 
-            for (var i = 1; i < path.Count; i++)
+            for (var i = 0; i < path.Count; i++)
             {
                 Debug.Log(path[i]);
                 var offset = path[i] - _characterController.transform.position;
