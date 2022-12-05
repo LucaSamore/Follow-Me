@@ -43573,6 +43573,7 @@ GameObject:
   - component: {fileID: 1967741389}
   - component: {fileID: 1967741390}
   - component: {fileID: 1967741391}
+  - component: {fileID: 1967741392}
   m_Layer: 0
   m_Name: AI
   m_TagString: Untagged
@@ -43675,7 +43676,7 @@ MonoBehaviour:
   currentHp: 100
   healthBar: {fileID: 1187116261}
   agent: {fileID: 1500894811}
-  howMany: 2
+  howMany: 5
 --- !u!195 &1967741390
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -43714,6 +43715,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1967741392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967741382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 922544c7903b062429d18a65e8a5f97c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1973037197
 GameObject:
   m_ObjectHideFlags: 0
