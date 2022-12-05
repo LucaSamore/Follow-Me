@@ -78,11 +78,11 @@ namespace Characters.AI
             healthBar.SetHealth(currentHp);
         }
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnTriggerEnter(Collider other)
         {
-            if (collision.collider.name != "Cube") return;
+            if (other.name != "Cube") return;
             //if (_previousTile is not null) _previousTile.material.SetColor(EmissionColor, Color.black);
-            var renderer = collision.gameObject.GetComponent<Renderer>();
+            var renderer = other.gameObject.GetComponent<Renderer>();
             renderer.material.EnableKeyword("_EMISSION");
             renderer.material.SetColor(EmissionColor, Color.green);
             //_previousTile = renderer;
