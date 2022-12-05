@@ -17,7 +17,7 @@ namespace Game
         [SerializeField] private GameObject opponent;
 
         private PlayerController _playerController;
-        private OpponentController _opponentController;
+        private AIController _aiController;
 
         //public IDictionary<Vector3, Vector2> Tilemap { get; private set; }
         public IDictionary<Vector3,Vector2Int> PlayerMap { get; private set; }
@@ -26,7 +26,7 @@ namespace Game
         private void Awake()
         {
             _playerController = player.GetComponent<PlayerController>();
-            _opponentController = opponent.GetComponent<OpponentController>();
+            _aiController = opponent.GetComponent<AIController>();
         }
 
         private void Start()

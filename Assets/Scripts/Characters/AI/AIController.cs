@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Characters.AI.Algorithms._2D;
 using Characters.AI.CustomAgent;
@@ -9,9 +8,8 @@ using Map.CustomNavMesh;
 
 namespace Characters.AI
 {
-    public sealed class OpponentController : MonoBehaviour
+    public sealed class AIController : MonoBehaviour
     {
-        private static readonly float Speed = 3f;
         private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
 
         [SerializeField] private Transform navigable;
@@ -20,11 +18,10 @@ namespace Characters.AI
         [SerializeField] private int maxHp;
         [SerializeField] private int currentHp;
         [SerializeField] private HealthBarController healthBar;
-        [SerializeField] private GameObject agent;
-
-        private Rigidbody _rigidbody;
+        [SerializeField] private GameObject agentObject;
+        [SerializeField] private int howMany;
+        
         [CanBeNull] private Renderer _previousTile;
-        private float _gravity;
         private INavMeshFactory _navMeshFactory;
         private IList<IAgent> _agents;
         private AgentMovement _agentMovement;
@@ -35,13 +32,12 @@ namespace Characters.AI
 
         private void Awake()
         {
-            _agentMovement = agent.GetComponent<AgentMovement>();
+            _agentMovement = agentObject.GetComponent<AgentMovement>();
+            _navMeshFactory = new NavMeshFactory();
         }
 
         private void Start()
         {
-            _rigidbody = GetComponent<Rigidbody>();
-            
             _agents = new List<IAgent>();
             _navMeshFactory = new NavMeshFactory();
             _agents.Add(isMap2D ?
@@ -52,19 +48,12 @@ namespace Characters.AI
                     null, 
                     new Vector3Int(0,0,0)));
             
-            _gravity = -9.81f * Time.deltaTime;
             healthBar.SetMaxHealth(maxHp);
-            
+            CreateMany();
         }
     
         private void Update()
         {
-            //characterController.Move(new Vector3(0f, _gravity, 0f));
-            //AgentWalk();
-            
-            // transform.position = Vector3.MoveTowards(transform.position, new Vector3(9.5f, 0f, 1.5f),
-            //     Speed * Time.deltaTime);
-            
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 AgentWalk();
@@ -84,8 +73,27 @@ namespace Characters.AI
             //if (_previousTile is not null) _previousTile.material.SetColor(EmissionColor, Color.black);
             var renderer = other.gameObject.GetComponent<Renderer>();
             renderer.material.EnableKeyword("_EMISSION");
-            renderer.material.SetColor(EmissionColor, Color.green);
+            renderer.material.SetColor(EmissionColor, Color.cyan);
             //_previousTile = renderer;
+        }
+        
+        private void CreateMany()
+        {
+            if(howMany <= 0) return;
+
+            for (var i = 0; i < howMany; i++)
+            {
+                var newAgent = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                newAgent.name = "AGENT 007";
+                newAgent.transform.parent = agentObject.transform;
+                newAgent.AddComponent<SphereCollider>();
+                newAgent.AddComponent<Rigidbody>();
+                newAgent.GetComponent<Rigidbody>().isKinematic = true;
+                newAgent.GetComponent<Renderer>().material = Resources.Load("Opponent Material", typeof(Material)) as Material;
+                newAgent.AddComponent<HealthBarController>();
+                newAgent.transform.position = new Vector3(6.5f, 1f, .5f);
+                //_agents.Add(newAgent);
+            }
         }
     }
 }

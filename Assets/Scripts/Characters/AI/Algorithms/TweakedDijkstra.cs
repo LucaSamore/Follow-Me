@@ -24,8 +24,7 @@ namespace Characters.AI.Algorithms
             var destination = ChooseDestination(depth);
             _algorithmIterations = SetIterations(destination);
             Debug.Log($"Destination: {destination.Element}");
-            Debug.Log($"Iterations: {_algorithmIterations}");
-            
+
             for (var i = 0; i < _algorithmIterations; i++)
             {
                 Nodes.Add(source);
