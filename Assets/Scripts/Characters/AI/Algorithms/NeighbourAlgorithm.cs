@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using JetBrains.Annotations;
 using Map;
 
 namespace Characters.AI.Algorithms
@@ -20,6 +21,7 @@ namespace Characters.AI.Algorithms
             for (var i = 0; i < steps; i++)
             {
                 var newPosition = Next(map, currentPosition);
+                if (newPosition is null) break;
                 path.Add(newPosition);
                 currentPosition = newPosition.Item2;
             }
@@ -29,24 +31,27 @@ namespace Characters.AI.Algorithms
 
         protected abstract IList<T> Neighbours(IDictionary<Vector3,T> map, T position);
 
-        protected virtual Tuple<Vector3, T> Next(IDictionary<Vector3, T> map, T position)
+        [CanBeNull]
+        private Tuple<Vector3,T> Next(IDictionary<Vector3, T> map, T position)
         {
-            var neighbour = TakeRandomNeighbour(Neighbours(map, position)).ToList();
+            var allNeighbours = Neighbours(map, position);
+
+            if (allNeighbours.Count == 0)
+            {
+                return null;
+            }
+            
+            var neighbour = TakeRandomNeighbour(allNeighbours).ToList();
             _alreadyVisited.Add(neighbour.First());
+            
             return neighbour
                 .Select(v2 =>
                     new Tuple<Vector3,T>(MapUtil.GetKeyFromValue(map, v2), v2))
                 .First();
         }
-            
 
-        protected virtual IEnumerable<T> TakeRandomNeighbour(IList<T> neighbours)
+        private IEnumerable<T> TakeRandomNeighbour(IList<T> neighbours)
         {
-            // if (neighbours.Count == 0)
-            // {
-            //     yield return null;
-            // }
-            
             yield return neighbours[new System.Random().Next(0, neighbours.Count - 1)];
         }
     }
