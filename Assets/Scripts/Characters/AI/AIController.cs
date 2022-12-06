@@ -3,7 +3,6 @@ using Characters.AI.Algorithms._2D;
 using Characters.AI.Algorithms._3D;
 using Characters.AI.CustomAgent;
 using Characters.HealthBar;
-using Map;
 using Map.CustomNavMesh;
 using UnityEngine;
 
@@ -38,7 +37,7 @@ namespace Characters.AI
                     transform.gameObject, 
                     _agentMovement,
                     _navMeshFactory.BakeMesh2D(navigable, startingPosition.position),
-                    new NeighbourAlgorithm2D(),
+                    new TweakedDijkstra2D(),
                     new Vector2Int(0,0)) : 
                 new Agent<Vector3Int>(
                     transform.gameObject, 

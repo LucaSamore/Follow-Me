@@ -15,7 +15,7 @@ namespace Characters.AI.Algorithms
         
         protected int _algorithmIterations;
         protected readonly ISet<IList<Node<T>>> _generatedPaths = new HashSet<IList<Node<T>>>();
-        protected List<Node<T>> Nodes { get; set; }
+        protected List<Node<T>> Nodes { get; private set; }
         
         public IList<Tuple<Vector3,T>> CreatePath(IDictionary<Vector3,T> map, T startingPosition, int depth)
         {
@@ -23,7 +23,6 @@ namespace Characters.AI.Algorithms
             var source = new Node<T>(startingPosition) { Cost = 0, State = NodeState.Open };
             var destination = ChooseDestination(depth);
             _algorithmIterations = SetIterations(destination);
-            Debug.Log($"Destination: {destination.Element}");
 
             for (var i = 0; i < _algorithmIterations; i++)
             {
@@ -35,7 +34,6 @@ namespace Characters.AI.Algorithms
             }
 
             var finalPath = ChooseRandomPath();
-
             return finalPath.Select(n =>
                     new Tuple<Vector3,T>(MapUtil.GetKeyFromValue(map, n.Element), n.Element))
                 .ToList();
@@ -55,15 +53,10 @@ namespace Characters.AI.Algorithms
         
         protected virtual Node<T> ChooseDestination(int depth)
         {
-            // var rng = new Random();
-            // var items = Nodes
-            //     .Where(n => Math.Abs(n.Element.x) >= depth || 
-            //              Math.Abs(n.Element.y) >= depth)
-            //     .ToList();
-            //
-            // return items.OrderBy(i => rng.Next()).First();
-            
-            return Nodes[6];
+            var rng = new System.Random();
+            var n = rng.Next(Nodes.Count - 1);
+            Debug.Log($"Generated Number {n}");
+            return Nodes[n];
         }
         
         protected IList<Node<T>> OpenNodesWithMinimumCost() =>

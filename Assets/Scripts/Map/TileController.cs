@@ -14,7 +14,7 @@ namespace Map
             if (_previousTile is not null) _previousTile.material.SetColor(EmissionColor, Color.black);
             var renderer = other.gameObject.GetComponent<Renderer>();
             renderer.material.EnableKeyword("_EMISSION");
-            renderer.material.SetColor(EmissionColor, Color.green);
+            renderer.material.SetColor(EmissionColor, Color.yellow);
             _previousTile = renderer;
         }
     }
