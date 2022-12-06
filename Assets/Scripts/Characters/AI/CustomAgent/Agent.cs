@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Characters.AI.CustomAgent.Commands;
+﻿using Characters.AI.CustomAgent.Commands;
 using System.Collections.Generic;
 using Characters.AI.Algorithms;
 using UnityEngine;
@@ -8,22 +7,28 @@ namespace Characters.AI.CustomAgent
 {
     public sealed class Agent<T> : IAgent where T : struct
     {
+        public GameObject AgentObject { get; set; }
         public IAgentCommand WalkCommand { get; set; }
         public IAgentCommand JumpCommand { get; set; }
 
         public Agent(
-            Transform agentTransform,
+            GameObject agentObject,
             AgentMovement agentMovement,
             IDictionary<Vector3,T> navmesh, 
             IPathStrategy<T> defaultAlgorithm, 
             T startingPosition)
         {
-            WalkCommand = new WalkCommand<T>(agentTransform, agentMovement, new PathBuilder<T>(navmesh, defaultAlgorithm), startingPosition);
+            AgentObject = agentObject;
+            WalkCommand = new WalkCommand<T>(agentObject, agentMovement, new PathBuilder<T>(navmesh, defaultAlgorithm), startingPosition);
             JumpCommand = new JumpCommand();
         }
 
         public Agent(Agent<T> agent)
         {
+            var prev = agent.AgentObject.GetComponent<AIController>().howMany;
+            agent.AgentObject.GetComponent<AIController>().howMany = 0;
+            AgentObject = GameObject.Instantiate(agent.AgentObject);
+            agent.AgentObject.GetComponent<AIController>().howMany = prev;
             WalkCommand = agent.WalkCommand;
             JumpCommand = agent.JumpCommand;
         }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Characters.AI.CustomAgent.Commands;
+﻿using UnityEngine;
 
 namespace Characters.AI.CustomAgent
 {
@@ -10,5 +9,7 @@ namespace Characters.AI.CustomAgent
         void Walk();
         
         void Jump();
+        
+        GameObject AgentObject { get; set; }
     }
 }

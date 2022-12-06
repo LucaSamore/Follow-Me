@@ -6,14 +6,14 @@ namespace Characters.AI.CustomAgent.Commands
 {
     public sealed class WalkCommand<T> : IAgentCommand where T : struct
     {
-        private readonly Transform _agentTransform;
+        private readonly GameObject _agentObject;
         private readonly AgentMovement _agentMovement;
         private readonly T _startingPosition;
         public PathBuilder<T> PathBuilder { get; }
 
-        public WalkCommand(Transform agentTransform, AgentMovement agentMovement, PathBuilder<T> pathBuilder, T startingPosition)
+        public WalkCommand(GameObject agentObject, AgentMovement agentMovement, PathBuilder<T> pathBuilder, T startingPosition)
         {
-            _agentTransform = agentTransform;
+            _agentObject = agentObject;
             _agentMovement = agentMovement;
             PathBuilder = pathBuilder;
             _startingPosition = startingPosition;
@@ -26,7 +26,7 @@ namespace Characters.AI.CustomAgent.Commands
                 .Select(t => t.Item1)
                 .ToList();
             
-            _agentMovement.RunCoroutine(_agentTransform, path);
+            _agentMovement.RunCoroutine(_agentObject.transform, path);
         }
     }
 }

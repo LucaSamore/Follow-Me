@@ -1,27 +1,52 @@
 using System.Collections.Generic;
+using Characters.AI.Algorithms._2D;
+using Characters.AI.Algorithms._3D;
 using Characters.AI.CustomAgent;
 using Characters.HealthBar;
+using Map;
+using Map.CustomNavMesh;
 using UnityEngine;
 
 namespace Characters.AI
 {
     public sealed class AIController : MonoBehaviour
     {
+        [SerializeField] private Transform navigable;
+        [SerializeField] private Transform startingPosition;
+        [SerializeField] private bool isMap2D;
         [SerializeField] private int maxHp;
         [SerializeField] private int currentHp;
         [SerializeField] private HealthBarController healthBar;
-        [SerializeField] private GameObject agent;
-        [SerializeField] private int howMany;
+        [SerializeField] private GameObject agentSource;
+        [SerializeField] public int howMany;
         
-        private IList<GameObject> _agents;
+        private INavMeshFactory _navMeshFactory;
+        private IAgent _aiAgent;
+        private AgentMovement _agentMovement;
+        private IList<IAgent> _generatedAgents;
 
         private void Awake()
         {
-            _agents = new List<GameObject>();
+            _navMeshFactory = new NavMeshFactory();
+            _agentMovement = agentSource.GetComponent<AgentMovement>();
+            _generatedAgents = new List<IAgent>();
         }
 
         private void Start()
         {
+            _aiAgent = isMap2D ? new Agent<Vector2Int>(
+                    transform.gameObject, 
+                    _agentMovement,
+                    _navMeshFactory.BakeMesh2D(navigable, startingPosition.position),
+                    new NeighbourAlgorithm2D(),
+                    new Vector2Int(0,0)) : 
+                new Agent<Vector3Int>(
+                    transform.gameObject, 
+                    _agentMovement, 
+                    _navMeshFactory.BakeMesh3D(navigable, startingPosition.position), 
+                    new TweakedDijkstra3D(), 
+                    new Vector3Int(0,0,0));
+
             healthBar.SetMaxHealth(maxHp);
             CreateMany();
         }
@@ -30,12 +55,19 @@ namespace Characters.AI
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                foreach (var a in _agents)
-                {
-                    a.GetComponent<AgentController>().Walk();
-                }
+                _aiAgent.Walk();
                 
+                foreach (var a in _generatedAgents)
+                {
+                    a.Walk();
+                }
+
                 TakeDamage(5);
+            }
+
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                DestroyAll();
             }
         }
 
@@ -51,8 +83,19 @@ namespace Characters.AI
 
             for (var i = 0; i < howMany; i++)
             {
-                _agents.Add(Instantiate(agent));
+                var newAgent = _aiAgent.Clone();
+                _generatedAgents.Add(newAgent);
             }
+        }
+
+        private void DestroyAll()
+        {
+            foreach (var agent in _generatedAgents)
+            {
+                Destroy(agent.AgentObject);
+            }
+            
+            _generatedAgents.Clear();
         }
     }
 }

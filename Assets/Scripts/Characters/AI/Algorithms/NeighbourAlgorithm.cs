@@ -42,6 +42,11 @@ namespace Characters.AI.Algorithms
 
         protected virtual IEnumerable<T> TakeRandomNeighbour(IList<T> neighbours)
         {
+            // if (neighbours.Count == 0)
+            // {
+            //     yield return null;
+            // }
+            
             yield return neighbours[new System.Random().Next(0, neighbours.Count - 1)];
         }
     }
