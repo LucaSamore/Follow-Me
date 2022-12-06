@@ -21,6 +21,7 @@ namespace Game
         {
             ResetColors("Player Zone");
             ResetColors("Opponent Zone");
+            
             character.transform.position = spawnPosition.transform.position;
             Physics.SyncTransforms();
         }

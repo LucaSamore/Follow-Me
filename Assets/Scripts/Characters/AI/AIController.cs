@@ -37,7 +37,7 @@ namespace Characters.AI
                     transform.gameObject, 
                     _agentMovement,
                     _navMeshFactory.BakeMesh2D(navigable, startingPosition.position),
-                    new TweakedDijkstra2D(),
+                    new NeighbourAlgorithm2D(),
                     new Vector2Int(0,0)) : 
                 new Agent<Vector3Int>(
                     transform.gameObject, 
@@ -64,7 +64,12 @@ namespace Characters.AI
                 TakeDamage(5);
             }
 
-            if (Input.GetKeyDown(KeyCode.G))
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                CreateMany();
+            }
+
+            if (Input.GetKeyDown(KeyCode.X))
             {
                 DestroyAll();
             }
