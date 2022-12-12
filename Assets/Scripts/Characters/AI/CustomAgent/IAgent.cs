@@ -3,7 +3,7 @@
 namespace Characters.AI.CustomAgent
 {
     /// <summary>
-    /// An interface for describing a custom agent.
+    /// An interface describing a custom agent.
     /// </summary>
     public interface IAgent
     {
