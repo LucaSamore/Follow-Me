@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Characters.Player
 {
+    /// <summary>
+    /// Represents the controller for the main character, controlled by the user.
+    /// </summary>
     public sealed class PlayerController : MonoBehaviour
     {
         private static readonly float Speed = 7.5f;
@@ -34,6 +37,9 @@ namespace Characters.Player
             }
         }
 
+        /// <summary>
+        /// Moves the player character and preserves its rotation.
+        /// </summary>
         private void MovePlayer()
         {
             var x = Input.GetAxis("Horizontal") * Speed * Time.deltaTime;

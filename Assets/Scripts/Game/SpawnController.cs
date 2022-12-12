@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace Game
 {
+    /// <summary>
+    /// Represents the controller that handles characters respawning.
+    /// </summary>
     public sealed class SpawnController : MonoBehaviour
     {
         private static readonly int EmissionColor = Shader.PropertyToID("_EmissionColor");
