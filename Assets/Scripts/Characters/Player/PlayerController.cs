@@ -65,6 +65,10 @@ namespace Characters.Player
             //_previousTile = renderer;
         }
 
+        /// <summary>
+        /// Update current hp upon taking damage.
+        /// </summary>
+        /// <param name="damage">Amount of hp lost.</param>
         private void TakeDamage(int damage)
         {
             currentHp -= damage;

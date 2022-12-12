@@ -8,6 +8,11 @@ using UnityEngine;
 
 namespace Characters.AI
 {
+    /// <summary>
+    /// Represents a controller for the AI.
+    /// A custom agent is attached to the AI and it handles its behaviour and movement.
+    /// The AI can also control multiple custom agents.
+    /// </summary>
     public sealed class AIController : MonoBehaviour
     {
         [SerializeField] private Transform navigable;
@@ -56,31 +61,33 @@ namespace Characters.AI
             {
                 _aiAgent.Walk();
                 
+                //Tell all generated agents to walk.
                 foreach (var a in _generatedAgents)
                 {
                     a.Walk();
                 }
-
+                
                 TakeDamage(5);
             }
-
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                CreateMany();
-            }
-
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                DestroyAll();
-            }
+            
+            if (Input.GetKeyDown(KeyCode.C)) CreateMany();
+            if (Input.GetKeyDown(KeyCode.X)) DestroyAll();
         }
 
+        /// <summary>
+        /// Update current hp upon taking damage.
+        /// </summary>
+        /// <param name="damage">Amount of hp lost.</param>
         private void TakeDamage(int damage)
         {
             currentHp -= damage;
             healthBar.SetHealth(currentHp);
         }
 
+        /// <summary>
+        /// Creates many custom agents by cloning the agent attached to the AI.
+        /// All generated agents are controlled by the AI.
+        /// </summary>
         private void CreateMany()
         {
             if(howMany <= 0) return;
@@ -92,6 +99,9 @@ namespace Characters.AI
             }
         }
 
+        /// <summary>
+        /// Kills all the agents, except for the one attached to the AI.
+        /// </summary>
         private void DestroyAll()
         {
             foreach (var agent in _generatedAgents)
