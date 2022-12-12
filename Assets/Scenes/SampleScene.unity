@@ -43661,7 +43661,7 @@ MonoBehaviour:
   currentHp: 100
   healthBar: {fileID: 1187116261}
   agentSource: {fileID: 1500894811}
-  howMany: 4
+  howMany: 1
 --- !u!195 &1967741390
 NavMeshAgent:
   m_ObjectHideFlags: 0

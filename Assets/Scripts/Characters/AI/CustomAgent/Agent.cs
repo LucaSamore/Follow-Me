@@ -20,7 +20,8 @@ namespace Characters.AI.CustomAgent
             T startingPosition)
         {
             AgentObject = agentObject;
-            WalkCommand = new WalkCommand<T>(agentObject, agentMovement, new PathBuilder<T>(navmesh, defaultAlgorithm), startingPosition);
+            WalkCommand = new WalkCommand<T>(agentObject, agentMovement, 
+                new PathBuilder<T>(navmesh, defaultAlgorithm), startingPosition);
             JumpCommand = new JumpCommand();
         }
 
@@ -28,9 +29,11 @@ namespace Characters.AI.CustomAgent
         {
             var prev = agent.AgentObject.GetComponent<AIController>().howMany;
             agent.AgentObject.GetComponent<AIController>().howMany = 0;
-            agent.AgentObject.GetComponent<TileController>().color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f),Random.Range(0f, 1f));
+            agent.AgentObject.GetComponent<TileController>().color = 
+                new Color(Random.Range(0f, 1f), Random.Range(0f, 1f),Random.Range(0f, 1f));
             AgentObject = GameObject.Instantiate(agent.AgentObject);
             agent.AgentObject.GetComponent<AIController>().howMany = prev;
+            
             WalkCommand = agent.WalkCommand;
             JumpCommand = agent.JumpCommand;
         }

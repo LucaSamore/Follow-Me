@@ -7,7 +7,7 @@ namespace Characters.AI.CustomAgent
     public sealed class AgentMovement : MonoBehaviour
     {
         private static readonly float Seconds = .5f;
-        
+
         public void RunCoroutine(Transform agentTransform, IList<Vector3> path) =>
             StartCoroutine(SequenceStart(agentTransform, path));
 

@@ -9,6 +9,7 @@ namespace Characters.AI.CustomAgent.Commands
         private readonly GameObject _agentObject;
         private readonly AgentMovement _agentMovement;
         private readonly T _startingPosition;
+
         public PathBuilder<T> PathBuilder { get; }
 
         public WalkCommand(GameObject agentObject, AgentMovement agentMovement, PathBuilder<T> pathBuilder, T startingPosition)
