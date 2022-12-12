@@ -5,8 +5,12 @@ using System.Linq;
 
 namespace Characters.AI.Algorithms._2D
 {
+    /// <summary>
+    /// Gives an implementation for all abstract method from <see cref="TweakedDijkstra{T}"/>
+    /// </summary>
     public sealed class TweakedDijkstra2D : TweakedDijkstra<Vector2Int>
     {
+        /// <inheritdoc cref="TweakedDijkstra{T}.FindShortestPath"/>
         protected override IList<Node<Vector2Int>> FindShortestPath(Node<Vector2Int> destination)
         {
             var path = new List<Node<Vector2Int>>();
@@ -41,6 +45,7 @@ namespace Characters.AI.Algorithms._2D
             return path;
         }
         
+        /// <inheritdoc cref="TweakedDijkstra{T}.SetIterations"/>
         protected override int SetIterations(Node<Vector2Int> destination) =>
             Enumerable
                 .Range(destination.Element.x - 1, NeighbourDistance)
@@ -50,6 +55,7 @@ namespace Characters.AI.Algorithms._2D
                 .SelectMany(p => Nodes.ToList().Where(n => n.Element.Equals(p)))
                 .Count(n => n.State != NodeState.Used) - 1;
         
+        /// <inheritdoc cref="TweakedDijkstra{T}.NonClosedNeighbours"/>
         protected override IList<Node<Vector2Int>> NonClosedNeighbours(Node<Vector2Int> node) =>
             Enumerable.Range(node.Element.x - 1, NeighbourDistance)
                 .SelectMany(kk =>
@@ -59,6 +65,7 @@ namespace Characters.AI.Algorithms._2D
                 .Where(n => n.State != NodeState.Close && n.State != NodeState.Used)
                 .ToList();
 
+        /// <inheritdoc cref="TweakedDijkstra{T}.NeighbourWithMinimumCost"/>
         protected override Node<Vector2Int> NeighbourWithMinimumCost(Node<Vector2Int> node)
         {
             var neighbours = Enumerable.Range(node.Element.x - 1, NeighbourDistance)
@@ -72,6 +79,7 @@ namespace Characters.AI.Algorithms._2D
             return enumerable.First(n => n.Cost == GetMinimumCost(enumerable));
         }
 
+        /// <inheritdoc cref="TweakedDijkstra{T}.TryUpdateCost"/>
         protected override bool TryUpdateCost(Node<Vector2Int> toBeUpdated, Node<Vector2Int> from)
         {
             var cost = from.Cost + (NodeUtil.IsDiagonalNeighbour(from, toBeUpdated)
@@ -83,6 +91,7 @@ namespace Characters.AI.Algorithms._2D
             return true;
         }
 
+        /// <inheritdoc cref="TweakedDijkstra{T}.ResetMap"/>
         protected override void ResetMap(Vector2Int startingPosition)
         {
             Nodes
